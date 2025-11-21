@@ -13,10 +13,11 @@ class Image
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length:255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: "images")]
+    #[ORM\ManyToOne(inversedBy: 'images')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Product $product = null;
 
     public function getId(): ?int
@@ -29,7 +30,7 @@ class Image
         return $this->url;
     }
 
-    public function setUrl(string $url): static
+    public function setUrl(?string $url): static
     {
         $this->url = $url;
         return $this;

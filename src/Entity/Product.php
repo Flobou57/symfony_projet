@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Entity;
-use App\Entity\ProductStatus;
+
 use App\Repository\ProductRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -18,27 +18,26 @@ class Product
     #[ORM\Column(length: 150)]
     private ?string $name = null;
 
-    #[ORM\Column(type: "float")]
+    #[ORM\Column(type: 'float')]
     private ?float $price = null;
 
-    #[ORM\Column(type: "text")]
+    #[ORM\Column(type: 'text')]
     private ?string $description = null;
 
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column(type: 'integer')]
     private ?int $stock = null;
 
-    // --- Champ Enum pour le statut du produit ---
-    #[ORM\Column(enumType: ProductStatus::class)]
+    #[ORM\ManyToOne(targetEntity: ProductStatus::class, inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?ProductStatus $status = null;
 
-    // --- Relations ---
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
     private ?Category $category = null;
 
-    #[ORM\OneToMany(mappedBy: "product", targetEntity: Image::class, cascade: ["persist", "remove"])]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Image::class, cascade: ['persist', 'remove'])]
     private Collection $images;
 
-    #[ORM\OneToMany(mappedBy: "product", targetEntity: OrderItem::class)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderItem::class, cascade: ['persist', 'remove'])]
     private Collection $orderItems;
 
     public function __construct()
@@ -47,7 +46,8 @@ class Product
         $this->orderItems = new ArrayCollection();
     }
 
-    // --- Getters et Setters ---
+    // === Getters & Setters ===
+
     public function getId(): ?int
     {
         return $this->id;
@@ -102,7 +102,7 @@ class Product
         return $this->status;
     }
 
-    public function setStatus(ProductStatus $status): static
+    public function setStatus(?ProductStatus $status): static
     {
         $this->status = $status;
         return $this;
@@ -130,7 +130,7 @@ class Product
     public function addImage(Image $image): static
     {
         if (!$this->images->contains($image)) {
-            $this->images->add($image);
+            $this->images[] = $image;
             $image->setProduct($this);
         }
         return $this;
@@ -152,5 +152,24 @@ class Product
     public function getOrderItems(): Collection
     {
         return $this->orderItems;
+    }
+
+    public function addOrderItem(OrderItem $orderItem): static
+    {
+        if (!$this->orderItems->contains($orderItem)) {
+            $this->orderItems[] = $orderItem;
+            $orderItem->setProduct($this);
+        }
+        return $this;
+    }
+
+    public function removeOrderItem(OrderItem $orderItem): static
+    {
+        if ($this->orderItems->removeElement($orderItem)) {
+            if ($orderItem->getProduct() === $this) {
+                $orderItem->setProduct(null);
+            }
+        }
+        return $this;
     }
 }

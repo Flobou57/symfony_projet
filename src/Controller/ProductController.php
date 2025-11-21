@@ -3,25 +3,65 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\Image;
+use App\Entity\Category;
+use App\Entity\ProductStatus;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/product')]
-final class ProductController extends AbstractController
+class ProductController extends AbstractController
 {
+    // 🧩 INDEX — Liste des produits avec filtre Catégorie + Statut
     #[Route(name: 'app_product_index', methods: ['GET'])]
-    public function index(ProductRepository $productRepository): Response
-    {
+    public function index(
+        Request $request,
+        ProductRepository $productRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Récupération des filtres
+        $selectedCategoryId = $request->query->get('category');
+        $selectedStatusLabel = $request->query->get('status');
+
+        // Récupération de toutes les catégories et statuts
+        $categories = $entityManager->getRepository(Category::class)->findAll();
+        $statuses = $entityManager->getRepository(ProductStatus::class)->findAll();
+
+        // Construction des critères de recherche
+        $criteria = [];
+
+        if ($selectedCategoryId) {
+            $criteria['category'] = $selectedCategoryId;
+        }
+
+        if ($selectedStatusLabel) {
+            // Trouver l’objet ProductStatus correspondant au label
+            $statusEntity = $entityManager->getRepository(ProductStatus::class)
+                ->findOneBy(['label' => $selectedStatusLabel]);
+
+            if ($statusEntity) {
+                $criteria['status'] = $statusEntity;
+            }
+        }
+
+        // Recherche des produits filtrés
+        $products = $productRepository->findBy($criteria);
+
         return $this->render('product/index.html.twig', [
-            'products' => $productRepository->findAll(),
+            'products' => $products,
+            'categories' => $categories,
+            'statuses' => $statuses,
+            'selectedCategoryId' => $selectedCategoryId,
+            'selectedStatus' => $selectedStatusLabel,
         ]);
     }
 
+    // 🧩 NEW — Ajout d’un produit avec upload d’image
     #[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -30,10 +70,27 @@ final class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Gestion du fichier image
+            $imageFile = $form->get('imageFile')->getData();
+
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move(
+                    $this->getParameter('kernel.project_dir') . '/public/uploads',
+                    $newFilename
+                );
+
+                $image = new Image();
+                $image->setUrl('/uploads/' . $newFilename);
+                $image->setProduct($product);
+                $entityManager->persist($image);
+            }
+
             $entityManager->persist($product);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', '✅ Produit ajouté avec succès !');
+            return $this->redirectToRoute('app_product_index');
         }
 
         return $this->render('product/new.html.twig', [
@@ -42,6 +99,7 @@ final class ProductController extends AbstractController
         ]);
     }
 
+    // 🧩 SHOW — Affichage du détail d’un produit
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
     public function show(Product $product): Response
     {
@@ -50,6 +108,7 @@ final class ProductController extends AbstractController
         ]);
     }
 
+    // 🧩 EDIT — Modification d’un produit
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
@@ -57,9 +116,25 @@ final class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $imageFile = $form->get('imageFile')->getData();
 
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move(
+                    $this->getParameter('kernel.project_dir') . '/public/uploads',
+                    $newFilename
+                );
+
+                $image = new Image();
+                $image->setUrl('/uploads/' . $newFilename);
+                $image->setProduct($product);
+                $entityManager->persist($image);
+            }
+
+            $entityManager->flush();
+            $this->addFlash('success', '✅ Produit modifié avec succès !');
+
+            return $this->redirectToRoute('app_product_index');
         }
 
         return $this->render('product/edit.html.twig', [
@@ -68,14 +143,16 @@ final class ProductController extends AbstractController
         ]);
     }
 
+    // 🧩 DELETE — Suppression d’un produit
     #[Route('/{id}', name: 'app_product_delete', methods: ['POST'])]
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
             $entityManager->remove($product);
             $entityManager->flush();
+            $this->addFlash('success', '🗑️ Produit supprimé avec succès !');
         }
 
-        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_product_index');
     }
 }

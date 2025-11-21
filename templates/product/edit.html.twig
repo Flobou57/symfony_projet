@@ -1,13 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Product{% endblock %}
+{% block title %}Modifier un produit{% endblock %}
 
 {% block body %}
-    <h1>Edit Product</h1>
+<div class="container mt-5 text-light">
+    <div class="card bg-dark border-secondary shadow-lg p-4">
+        <h1 class="text-center mb-4 text-warning">✏️ Modifier le produit</h1>
 
-    {{ include('product/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.name, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                </div>
 
-    <a href="{{ path('app_product_index') }}">back to list</a>
+                <div class="mb-3">
+                    {{ form_label(form.price, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.price, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                </div>
 
-    {{ include('product/_delete_form.html.twig') }}
+                <div class="mb-3">
+                    {{ form_label(form.stock, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.stock, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.status, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.status, {'attr': {'class': 'form-select bg-dark text-light border-secondary'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.category, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.category, {'attr': {'class': 'form-select bg-dark text-light border-secondary'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.imageFile, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.imageFile, {'attr': {'class': 'form-control bg-dark text-light border-secondary'}}) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control bg-dark text-light border-secondary', 'rows': 4}}) }}
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-warning btn-lg">💾 Mettre à jour</button>
+            <a href="{{ path('app_product_index') }}" class="btn btn-outline-light btn-lg">↩️ Retour</a>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>
 {% endblock %}
