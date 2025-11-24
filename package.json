@@ -1,0 +1,27 @@
+{
+  "name": "symfony_projet",
+  "version": "1.0.0",
+  "description": "Attention : Il vous faut PHP 8.2 pour faire fonctionner ce projet.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Flobou57/symfony_projet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Flobou57/symfony_projet/issues"
+  },
+  "homepage": "https://github.com/Flobou57/symfony_projet#readme",
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2"
+  }
+}

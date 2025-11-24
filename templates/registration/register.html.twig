@@ -1,19 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Créer un compte{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-dark text-light">
+    <div class="card bg-secondary shadow-lg p-4 w-100" style="max-width: 500px;">
+        <h2 class="text-center mb-4 text-info">🧾 Créer un compte</h2>
 
-    {{ form_errors(registrationForm) }}
+        {{ form_start(registrationForm) }}
+            <div class="mb-3">
+                {{ form_label(registrationForm.email, 'Adresse e-mail', {'label_attr': {'class': 'form-label text-light'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            <div class="mb-3">
+                {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label text-light'}}) }}
+                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            <div class="form-check mb-3">
+                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(registrationForm.agreeTerms, 'J’accepte les conditions', {'label_attr': {'class': 'form-check-label text-light'}}) }}
+            </div>
+
+            <button type="submit" class="btn btn-info w-100">Créer mon compte</button>
+        {{ form_end(registrationForm) }}
+
+        <div class="text-center mt-3">
+            <a href="{{ path('app_login') }}" class="text-decoration-none text-light">Déjà un compte ? Connecte-toi</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

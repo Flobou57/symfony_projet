@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-light">
+    <h1 class="mb-4 text-info text-center fw-bold">🧺 Mon Panier</h1>
+
+    {% if items is empty %}
+        <p class="text-center text-muted">Votre panier est vide 😢</p>
+        <div class="text-center mt-3">
+            <a href="{{ path('app_shop_index') }}" class="btn btn-outline-info">⬅ Retour à la boutique</a>
+        </div>
+    {% else %}
+        <table class="table table-dark table-hover align-middle text-center border border-info">
+            <thead class="table-info text-dark">
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix unitaire</th>
+                    <th>Sous-total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.product.price }} €</td>
+                        <td>{{ item.subtotal }} €</td>
+                        <td>
+                            <a href="{{ path('app_shop_remove', { id: item.product.id }) }}" class="btn btn-sm btn-outline-danger">❌ Retirer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4>Total : <span class="text-info">{{ total }} €</span></h4>
+            <div>
+                <a href="{{ path('app_shop_clear') }}" class="btn btn-outline-warning me-2">🧹 Vider le panier</a>
+                <a href="{{ path('app_shop_checkout') }}" class="btn btn-success">💳 Payer et valider la commande</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    table th, table td {
+        vertical-align: middle;
+    }
+    .btn-success {
+        background-color: #198754 !important;
+        border: none;
+    }
+    .btn-success:hover {
+        background-color: #157347 !important;
+    }
+</style>
+{% endblock %}

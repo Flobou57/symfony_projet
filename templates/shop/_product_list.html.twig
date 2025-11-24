@@ -1,0 +1,33 @@
+<div class="row">
+    {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-info shadow-lg product-card h-100">
+                {% if product.images|length > 0 %}
+                    <img src="{{ product.images[0].url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                    <img src="/images/no-image.png" class="card-img-top" alt="Aucune image">
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-info fw-bold">{{ product.name }}</h5>
+                    <p class="text-muted small mb-1">
+                        Catégorie : {{ product.category.name ?? 'Non définie' }}
+                    </p>
+                    <p class="text-warning small mb-2">
+                        Statut : {{ product.status.label ?? '—' }}
+                    </p>
+                    <p class="card-text flex-grow-1">{{ product.description|slice(0, 100) }}...</p>
+                    <h5 class="mt-auto text-end text-light fw-bold">{{ product.price }} €</h5>
+
+                    <a href="{{ path('app_shop_add', { id: product.id }) }}"
+                       class="btn btn-outline-info w-100 mt-3"
+                       data-action="click->cart#add">
+                        🛒 Ajouter au panier
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-center mt-5">Aucun produit ne correspond à vos filtres 😢</p>
+    {% endfor %}
+</div>

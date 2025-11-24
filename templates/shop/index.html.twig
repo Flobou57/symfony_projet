@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-light" data-controller="filter">
+    <h1 class="mb-4 text-info text-center fw-bold">🛍️ Bienvenue dans la Boutique SkinMarket</h1>
+
+    <!-- 🔎 Filtres dynamiques -->
+    <form class="mb-5 bg-dark p-3 rounded border border-info shadow-sm">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label text-info fw-bold">Filtrer par catégorie :</label>
+                <select data-filter-target="category"
+                        name="category"
+                        class="form-select bg-dark text-light border-info"
+                        data-action="change->filter#updateFilters">
+                    <option value="">Toutes les catégories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-5">
+                <label class="form-label text-info fw-bold">Filtrer par statut :</label>
+                <select data-filter-target="status"
+                        name="status"
+                        class="form-select bg-dark text-light border-info"
+                        data-action="change->filter#updateFilters">
+                    <option value="">Tous les statuts</option>
+                    {% for s in statuses %}
+                        <option value="{{ s.id }}" {% if selectedStatus == s.id %}selected{% endif %}>
+                            {{ s.label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2 text-end">
+                <button type="button"
+                        class="btn btn-info w-100 fw-bold"
+                        data-action="click->filter#updateFilters">
+                    Filtrer 🔍
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- 🧾 Résultats dynamiques -->
+    <div id="shop-results" data-filter-target="results">
+        {% include 'shop/_product_list.html.twig' with { products: products } %}
+    </div>
+
+    <!-- 🛒 Bouton panier -->
+    <div class="text-center mt-4">
+        <a href="{{ path('app_shop_cart') }}" class="btn btn-info px-5 py-2 fw-bold shadow-sm">
+            Voir mon panier 🧺
+        </a>
+    </div>
+</div>
+
+<!-- 💅 Style -->
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 0 25px rgba(13, 202, 240, 0.3);
+    }
+    select:focus, button:focus {
+        outline: none !important;
+        box-shadow: 0 0 10px #0dcaf0;
+    }
+    option {
+        background-color: #212529;
+        color: #f8f9fa;
+    }
+</style>
+{% endblock %}

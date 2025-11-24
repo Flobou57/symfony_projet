@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes cartes bancaires{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-light">
+    <h2 class="mb-4 text-info text-center fw-bold">💳 Mes cartes bancaires</h2>
+
+    {% if cards|length == 0 %}
+        <div class="alert alert-warning text-center">
+            Vous n’avez pas encore enregistré de carte.
+            <a href="{{ path('app_credit_card_new') }}" class="btn btn-info mt-3">➕ Ajouter une carte</a>
+        </div>
+    {% else %}
+        <div class="row g-4">
+            {% for card in cards %}
+                <div class="col-md-4">
+                    <div class="card bg-dark border-info shadow-lg p-3 text-center">
+                        <div class="credit-chip mb-2 mx-auto"></div>
+                        <div class="fs-5 fw-bold text-info">**** **** **** {{ card.number|slice(-4) }}</div>
+                        <div class="text-muted small mt-2">Exp. {{ card.expirationDate }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .credit-chip {
+        width: 45px;
+        height: 28px;
+        background: linear-gradient(135deg, #f0c674, #d4a017);
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}

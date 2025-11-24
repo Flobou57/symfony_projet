@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une carte{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-light">
+    <div class="card bg-dark border-info shadow-lg p-5 mx-auto" style="max-width: 600px;">
+        <h2 class="text-center mb-4 text-info fw-bold">💳 Ajouter une carte bancaire</h2>
+
+        {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.number, null, {'label_attr': {'class': 'form-label text-light'}}) }}
+            {{ form_widget(form.number, {'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.expirationDate, null, {'label_attr': {'class': 'form-label text-light'}}) }}
+                {{ form_widget(form.expirationDate, {'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.cvv, null, {'label_attr': {'class': 'form-label text-light'}}) }}
+                {{ form_widget(form.cvv, {'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button class="btn btn-info px-5 py-2 fw-bold shadow-sm rounded-pill">Enregistrer la carte</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #0b0c10;
+    }
+
+    .card {
+        animation: fadeIn 0.8s ease;
+    }
+
+    input:focus {
+        border-color: #0dcaf0 !important;
+        box-shadow: 0 0 10px rgba(13, 202, 240, 0.5);
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        transition: 0.2s;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
