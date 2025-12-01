@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\Table(name: "orders")] // ✅ <-- Ajoute cette ligne
+#[ORM\Table(name: "orders")]
 class Order
 {
     #[ORM\Id]
@@ -18,6 +18,15 @@ class Order
 
     #[ORM\Column(type: 'float')]
     private ?float $total = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $status = null;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -31,11 +40,13 @@ class Order
         $this->items = new ArrayCollection();
     }
 
+    // 🔹 ID
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    // 🔹 Total
     public function getTotal(): ?float
     {
         return $this->total;
@@ -47,6 +58,42 @@ class Order
         return $this;
     }
 
+    // 🔹 Statut
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    // 🔹 Dates
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    // 🔹 Utilisateur
     public function getUser(): ?User
     {
         return $this->user;
@@ -58,6 +105,7 @@ class Order
         return $this;
     }
 
+    // 🔹 Articles de commande
     /**
      * @return Collection<int, OrderItem>
      */
@@ -72,7 +120,6 @@ class Order
             $this->items->add($item);
             $item->setOrder($this);
         }
-
         return $this;
     }
 
@@ -83,7 +130,6 @@ class Order
                 $item->setOrder(null);
             }
         }
-
         return $this;
     }
 }

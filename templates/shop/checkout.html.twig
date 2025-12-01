@@ -8,31 +8,43 @@
         <h2 class="text-center text-info mb-4 fw-bold">💳 Paiement sécurisé</h2>
         <p class="text-center text-muted">Veuillez saisir vos informations de paiement pour finaliser la commande</p>
 
-        <form method="post">
+        <form method="post" novalidate>
             <div class="mb-3">
                 <label class="form-label">Numéro de carte</label>
-                <input type="text" name="card_number" maxlength="16"
+                <input type="text" 
+                       name="card_number"
+                       pattern="\d{16}" 
+                       maxlength="16"
                        class="form-control bg-dark text-light border-info"
-                       placeholder="1111 2222 3333 4444" required>
+                       placeholder="1111 2222 3333 4444" 
+                       required>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Date d’expiration (MM/AA)</label>
-                    <input type="text" name="expiration" maxlength="5"
+                    <input type="text" 
+                           name="expiration" 
+                           pattern="\d{2}/\d{2}"
+                           maxlength="5"
                            class="form-control bg-dark text-light border-info"
-                           placeholder="12/27" required>
+                           placeholder="12/27" 
+                           required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">CVV</label>
-                    <input type="text" name="cvv" maxlength="3"
+                    <input type="text" 
+                           name="cvv"
+                           pattern="\d{3}"
+                           maxlength="3"
                            class="form-control bg-dark text-light border-info"
-                           placeholder="123" required>
+                           placeholder="123" 
+                           required>
                 </div>
             </div>
 
             <div class="text-center mt-4">
-                <button class="btn btn-info px-5 py-2 fw-bold rounded-pill shadow-sm">💰 Payer maintenant</button>
+                <button type="submit" class="btn btn-info px-5 py-2 fw-bold rounded-pill shadow-sm">💰 Payer maintenant</button>
             </div>
         </form>
 

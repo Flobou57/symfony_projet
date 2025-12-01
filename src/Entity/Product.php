@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Product
 {
     #[ORM\Id]
@@ -171,5 +172,28 @@ class Product
             }
         }
         return $this;
+    }
+
+    // === 🔁 Synchronisation automatique du statut selon le stock ===
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function syncStatusWithStock(): void
+    {
+        // Si aucun stock défini, on ne fait rien
+        if ($this->stock === null) {
+            return;
+        }
+
+        // Si pas d'accès à la base (en CLI), on ne modifie pas
+        if (!class_exists(\Doctrine\ORM\EntityManagerInterface::class)) {
+            return;
+        }
+
+        // On ne crée pas un nouveau ProductStatus ici — on suppose qu'il existe déjà
+        if ($this->stock <= 0 && $this->status && $this->status->getLabel() !== 'Rupture') {
+            $this->status->setLabel('Rupture');
+        } elseif ($this->stock > 0 && $this->status && $this->status->getLabel() !== 'Disponible') {
+            $this->status->setLabel('Disponible');
+        }
     }
 }

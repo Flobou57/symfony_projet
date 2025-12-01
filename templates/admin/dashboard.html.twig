@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord Admin{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-light">
+    <h1 class="text-info text-center mb-5 fw-bold">📊 Tableau de bord administrateur</h1>
+
+    <!-- Bloc 1 : Produits par catégorie -->
+    <div class="card bg-dark border-info mb-4 p-4">
+        <h4 class="text-info mb-3">📦 Produits par catégorie</h4>
+        <ul class="list-group list-group-flush">
+            {% for category, count in productsByCategory %}
+                <li class="list-group-item bg-dark text-light d-flex justify-content-between">
+                    <span>{{ category }}</span>
+                    <strong>{{ count }}</strong>
+                </li>
+            {% else %}
+                <li class="list-group-item bg-dark text-muted">Aucune catégorie trouvée.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Bloc 2 : Dernières commandes -->
+    <div class="card bg-dark border-info mb-4 p-4">
+        <h4 class="text-info mb-3">🧾 5 dernières commandes</h4>
+        <table class="table table-dark table-striped align-middle">
+            <thead class="table-info text-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Client</th>
+                    <th>Total (€)</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in lastOrders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                        <td>{{ order.user.email }}</td>
+                        <td>{{ order.total }}</td>
+                        <td><span class="badge bg-{{ order.status == 'livrée' ? 'success' : 'secondary' }}">{{ order.status }}</span></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="text-center text-muted">Aucune commande trouvée.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bloc 3 : Ratio disponibilité -->
+    <div class="card bg-dark border-info mb-4 p-4">
+        <h4 class="text-info mb-3">⚖️ Disponibilité des produits</h4>
+        <div class="row text-center">
+            {% for label, ratio in ratios %}
+                <div class="col-md-4">
+                    <div class="p-3 border rounded bg-dark shadow-sm">
+                        <h5 class="text-light">{{ label }}</h5>
+                        <p class="text-info fw-bold">{{ ratio }}%</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Bloc 4 : Montant total des ventes -->
+    <div class="card bg-dark border-info p-4 mb-5">
+        <h4 class="text-info mb-3">💰 Montant total des ventes (6 derniers mois)</h4>
+        <table class="table table-dark table-striped">
+            <thead class="table-info text-dark">
+                <tr>
+                    <th>Mois</th>
+                    <th>Total (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in salesData %}
+                    <tr>
+                        <td>{{ data.month }}</td>
+                        <td>{{ data.total|number_format(2, ',', ' ') }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="2" class="text-center text-muted">Aucune vente enregistrée.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: 0.3s;
+}
+.card:hover {
+    box-shadow: 0 0 15px rgba(13, 202, 240, 0.4);
+}
+</style>
+{% endblock %}
