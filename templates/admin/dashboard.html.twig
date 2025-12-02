@@ -41,8 +41,14 @@
                         <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
                         <td>{{ order.user.email }}</td>
                         <td>{{ order.total }}</td>
-                        {% set statusKey = order.status == 'livrée' ? 'admin.status_delivered' : (order.status == 'en attente' ? 'admin.status_pending' : order.status) %}
-                        <td><span class="badge bg-{{ order.status == 'livrée' ? 'success' : 'secondary' }}">{{ statusKey|trans }}</span></td>
+                        {% set statusValue = order.status ? order.status.value : '' %}
+                        {% set statusKey = statusValue ? 'order_status.' ~ statusValue : '' %}
+                        {% set badgeClass =
+                            statusValue == 'livrée' ? 'success' :
+                            (statusValue == 'expédiée' ? 'info' :
+                            (statusValue == 'en préparation' ? 'warning text-dark' :
+                            (statusValue == 'annulée' ? 'danger' : 'secondary'))) %}
+                        <td><span class="badge bg-{{ badgeClass }}">{{ statusKey ? statusKey|trans : statusValue }}</span></td>
                     </tr>
                 {% else %}
                     <tr><td colspan="5" class="text-center text-muted">{{ 'admin.orders_none'|trans }}</td></tr>

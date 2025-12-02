@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Entity\OrderItem;
+use App\Enum\OrderStatus;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductStatusRepository;
@@ -244,8 +245,9 @@ class ShopController extends AbstractController
             // ✅ Création de la commande numérique livrée instantanément
             $order = new Order();
             $order->setUser($user);
+            $order->setReference(uniqid('CMD-'));
             $order->setTotal($total);
-            $order->setStatus('livrée'); // commande numérique immédiate
+            $order->setStatus(OrderStatus::LIVREE); // commande numérique immédiate
             $order->setCreatedAt(new \DateTimeImmutable());
             $order->setUpdatedAt(new \DateTimeImmutable());
 
@@ -263,7 +265,7 @@ class ShopController extends AbstractController
                 $item = new OrderItem();
                 $item->setProduct($product);
                 $item->setQuantity($qty);
-                $item->setPrice($product->getPrice());
+                $item->setProductPrice($product->getPrice());
                 $order->addItem($item);
 
                 // 🔻 Mise à jour du stock

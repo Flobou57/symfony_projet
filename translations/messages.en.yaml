@@ -164,3 +164,9 @@ flash:
   product_missing: "Product #%id% no longer exists."
   stock_unavailable: "❌ Product \"%name%\" is no longer in stock."
   payment_success: "✅ Payment approved with card **** %last4%"
+
+order_status:
+  "en préparation": "In preparation"
+  "expédiée": "Shipped"
+  "livrée": "Delivered"
+  "annulée": "Cancelled"

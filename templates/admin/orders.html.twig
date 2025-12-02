@@ -19,15 +19,22 @@
         {% for order in orders %}
             <tr>
                 <td>#{{ order.id }}</td>
-                <td>{{ order.user.fullname ?: order.user.email }}</td>
+                {% set name = [order.user.firstName, order.user.lastName]|filter(v => v is not null and v != '')|join(' ') %}
+                <td>{{ name ?: order.user.email }}</td>
                 <td>{{ order.total|number_format(2, ',', ' ') }}</td>
+                {% set statusValue = order.status ? order.status.value : '' %}
+                {% set statusKey = statusValue ? 'order_status.' ~ statusValue : '' %}
                 <td>
-                    {% if order.status == 'livrée' %}
-                        <span class="badge bg-success">{{ 'admin.status_delivered'|trans }}</span>
-                    {% elseif order.status == 'en attente' %}
-                        <span class="badge bg-warning text-dark">{{ 'admin.status_pending'|trans }}</span>
+                    {% if statusValue == 'livrée' %}
+                        <span class="badge bg-success">{{ statusKey|trans }}</span>
+                    {% elseif statusValue == 'expédiée' %}
+                        <span class="badge bg-info text-dark">{{ statusKey|trans }}</span>
+                    {% elseif statusValue == 'en préparation' %}
+                        <span class="badge bg-warning text-dark">{{ statusKey|trans }}</span>
+                    {% elseif statusValue == 'annulée' %}
+                        <span class="badge bg-danger">{{ statusKey|trans }}</span>
                     {% else %}
-                        <span class="badge bg-secondary">{{ order.status }}</span>
+                        <span class="badge bg-secondary">{{ statusKey ? statusKey|trans : 'N/A' }}</span>
                     {% endif %}
                 </td>
                 <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>

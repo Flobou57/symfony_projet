@@ -24,7 +24,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    private ?string $fullname = null;
+    private ?string $firstName = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $lastName = null;
 
     /**
      * @var list<string> Rôles de l'utilisateur
@@ -44,9 +47,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: CreditCard::class, orphanRemoval: true)]
     private Collection $creditCards;
 
+    /**
+     * @var Collection<int, Order>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class, orphanRemoval: true)]
+    private Collection $orders;
+
     public function __construct()
     {
         $this->creditCards = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     // === Identité ===
@@ -66,14 +76,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFullname(): ?string
+    public function getFirstName(): ?string
     {
-        return $this->fullname;
+        return $this->firstName;
     }
 
-    public function setFullname(?string $fullname): static
+    public function setFirstName(?string $firstName): static
     {
-        $this->fullname = $fullname;
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): static
+    {
+        $this->lastName = $lastName;
         return $this;
     }
 
@@ -155,8 +176,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): static
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): static
+    {
+        if ($this->orders->removeElement($order)) {
+            if ($order->getUser() === $this) {
+                $order->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function __toString(): string
     {
-        return $this->fullname ?: $this->email;
+        $nameParts = array_filter([$this->firstName, $this->lastName]);
+        if (!empty($nameParts)) {
+            return implode(' ', $nameParts);
+        }
+        return $this->email ?? '';
     }
 }

@@ -19,7 +19,10 @@
         {% for user in users %}
             <tr>
                 <td>#{{ user.id }}</td>
-                <td>{{ user.fullname ?: '—' }}</td>
+                <td>
+                    {% set name = [user.firstName, user.lastName]|filter(v => v is not null and v != '')|join(' ') %}
+                    {{ name ?: '—' }}
+                </td>
                 <td>{{ user.email }}</td>
                 <td>
                     {% for role in user.roles %}

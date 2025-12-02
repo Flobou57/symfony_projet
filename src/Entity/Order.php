@@ -6,6 +6,7 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\OrderStatus;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: "orders")]
@@ -16,11 +17,14 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 100, unique: true)]
+    private ?string $reference = null;
+
     #[ORM\Column(type: 'float')]
     private ?float $total = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $status = null;
+    #[ORM\Column(length: 50, enumType: OrderStatus::class)]
+    private ?OrderStatus $status = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt = null;
@@ -28,7 +32,7 @@ class Order
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -38,6 +42,17 @@ class Order
     public function __construct()
     {
         $this->items = new ArrayCollection();
+    }
+
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+
+    public function setReference(string $reference): static
+    {
+        $this->reference = $reference;
+        return $this;
     }
 
     // 🔹 ID
@@ -59,12 +74,12 @@ class Order
     }
 
     // 🔹 Statut
-    public function getStatus(): ?string
+    public function getStatus(): ?OrderStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(OrderStatus $status): static
     {
         $this->status = $status;
         return $this;

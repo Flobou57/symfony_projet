@@ -25,7 +25,7 @@ class OrderItem
     private ?int $quantity = null;
 
     #[ORM\Column(type: 'float')]
-    private ?float $price = null;
+    private ?float $productPrice = null;
 
     public function getId(): ?int
     {
@@ -65,19 +65,19 @@ class OrderItem
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getProductPrice(): ?float
     {
-        return $this->price;
+        return $this->productPrice;
     }
 
-    public function setPrice(float $price): static
+    public function setProductPrice(float $productPrice): static
     {
-        $this->price = $price;
+        $this->productPrice = $productPrice;
         return $this;
     }
 
     public function getSubtotal(): float
     {
-        return $this->price * $this->quantity;
+        return $this->productPrice * $this->quantity;
     }
 }
