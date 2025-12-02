@@ -9,7 +9,18 @@
     <!-- 🔎 Filtres dynamiques -->
     <form class="mb-5 bg-dark p-3 rounded border border-info shadow-sm">
         <div class="row g-3 align-items-end">
-            <div class="col-md-5">
+            <div class="col-md-4">
+                <label class="form-label text-info fw-bold">{{ 'shop.search_label'|default('Recherche')|trans }}</label>
+                <input type="text"
+                       name="q"
+                       value="{{ selectedQuery }}"
+                       class="form-control bg-dark text-light border-info"
+                       placeholder="{{ 'shop.search_placeholder'|trans }}"
+                       data-filter-target="query"
+                       data-action="change->filter#updateFilters keyup->filter#updateFilters">
+            </div>
+
+            <div class="col-md-4">
                 <label class="form-label text-info fw-bold">{{ 'shop.filter_category'|trans }}</label>
                 <select data-filter-target="category"
                         name="category"
@@ -24,7 +35,7 @@
                 </select>
             </div>
 
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <label class="form-label text-info fw-bold">{{ 'shop.filter_status'|trans }}</label>
                 <select data-filter-target="status"
                         name="status"

@@ -1,6 +1,8 @@
 nav:
   shop: "Shop"
   dashboard: "Dashboard"
+  profile: "Profile"
+  search: "Search"
   products: "Products"
   categories: "Categories"
   orders: "Orders"
@@ -20,6 +22,8 @@ shop:
   filter_status: "Filter by status:"
   filter_category_placeholder: "All categories"
   filter_status_placeholder: "All statuses"
+  search_label: "Search"
+  search_placeholder: "Name or description..."
   filter_button: "Filter"
   cart_button: "View my cart 🧺"
   no_results: "No products match your filters 😢"
@@ -150,6 +154,18 @@ status_labels:
 
 footer:
   rights: "© %year% SkinMarket - All rights reserved."
+
+profile:
+  title: "Profile"
+  heading: "My profile"
+  email: "Email"
+  first_name: "First name"
+  last_name: "Last name"
+  addresses: "Addresses"
+  no_address: "No address on file"
+  roles: "Roles"
+  add_address: "Add an address"
+  add_address_cta: "Save address"
 
 flash:
   product_not_found: "Product not found."

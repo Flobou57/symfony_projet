@@ -15,9 +15,29 @@
             </div>
 
             <div class="mb-3">
+                {{ form_label(registrationForm.firstName, 'Prénom', {'label_attr': {'class': 'form-label text-light'}}) }}
+                {{ form_widget(registrationForm.firstName, {'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+                {{ form_errors(registrationForm.firstName) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.lastName, 'Nom', {'label_attr': {'class': 'form-label text-light'}}) }}
+                {{ form_widget(registrationForm.lastName, {'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+                {{ form_errors(registrationForm.lastName) }}
+            </div>
+
+            <div class="mb-3">
                 {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label text-light'}}) }}
                 {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
                 {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="border border-info rounded p-3 mb-3">
+                <h5 class="text-info">Adresse de facturation</h5>
+                {{ form_row(registrationForm.address.street, {'label': 'Rue et numéro', 'attr': {'class': 'form-control bg-dark text-light border-info mb-2'}}) }}
+                {{ form_row(registrationForm.address.postalCode, {'label': 'Code postal', 'attr': {'class': 'form-control bg-dark text-light border-info mb-2'}}) }}
+                {{ form_row(registrationForm.address.city, {'label': 'Ville', 'attr': {'class': 'form-control bg-dark text-light border-info mb-2'}}) }}
+                {{ form_row(registrationForm.address.country, {'label': 'Pays', 'attr': {'class': 'form-control bg-dark text-light border-info mb-0'}}) }}
             </div>
 
             <div class="form-check mb-3">

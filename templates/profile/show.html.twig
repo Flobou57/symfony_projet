@@ -1,23 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil{% endblock %}
+{% block title %}{{ 'profile.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5 text-light">
     <div class="card bg-dark border-info shadow-lg p-4 mx-auto" style="max-width: 600px;">
-        <h2 class="text-center text-info mb-4">👤 Mon profil</h2>
+        <h2 class="text-center text-info mb-4">👤 {{ 'profile.heading'|trans }}</h2>
 
         <dl class="row">
-            <dt class="col-sm-4">Email</dt>
+            <dt class="col-sm-4">{{ 'profile.email'|trans }}</dt>
             <dd class="col-sm-8">{{ user.email }}</dd>
 
-            <dt class="col-sm-4">Prénom</dt>
+            <dt class="col-sm-4">{{ 'profile.first_name'|trans }}</dt>
             <dd class="col-sm-8">{{ user.firstName ?? '—' }}</dd>
 
-            <dt class="col-sm-4">Nom</dt>
+            <dt class="col-sm-4">{{ 'profile.last_name'|trans }}</dt>
             <dd class="col-sm-8">{{ user.lastName ?? '—' }}</dd>
 
-            <dt class="col-sm-4">Rôles</dt>
+            <dt class="col-sm-4">{{ 'profile.addresses'|trans }}</dt>
+            <dd class="col-sm-8">
+                {% if user.addresses|length > 0 %}
+                    <ul class="list-unstyled mb-0">
+                        {% for address in user.addresses %}
+                            <li class="mb-2">
+                                <span class="d-block">{{ address.street }}</span>
+                                <small class="text-muted">{{ address.postalCode }} {{ address.city }}, {{ address.country }}</small>
+                                <form method="post" action="{{ path('app_profile_address_delete', {id: address.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer cette adresse ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_address_' ~ address.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger ms-2">✖</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <span class="text-muted">{{ 'profile.no_address'|trans }}</span>
+                {% endif %}
+            </dd>
+
+            <dt class="col-sm-4">{{ 'profile.roles'|trans }}</dt>
             <dd class="col-sm-8">
                 {% for role in user.roles %}
                     <span class="badge bg-{{ role == 'ROLE_ADMIN' ? 'danger' : 'info' }}">{{ role }}</span>
@@ -27,8 +47,31 @@
             </dd>
         </dl>
 
+        <div class="border border-info rounded p-3 mb-3">
+            <h5 class="text-info mb-3">{{ 'profile.add_address'|trans }}</h5>
+            {{ form_start(addressForm) }}
+            <div class="mb-2">
+                {{ form_row(addressForm.street, {'label': 'Rue et numéro', 'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+            </div>
+            <div class="row g-2">
+                <div class="col-md-4">
+                    {{ form_row(addressForm.postalCode, {'label': 'Code postal', 'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(addressForm.city, {'label': 'Ville', 'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(addressForm.country, {'label': 'Pays', 'attr': {'class': 'form-control bg-dark text-light border-info'}}) }}
+                </div>
+            </div>
+            <div class="text-end mt-3">
+                <button class="btn btn-info">{{ 'profile.add_address_cta'|trans }}</button>
+            </div>
+            {{ form_end(addressForm) }}
+        </div>
+
         <div class="text-center mt-4">
-            <a href="{{ path('app_logout') }}" class="btn btn-outline-warning">🚪 Se déconnecter</a>
+            <a href="{{ path('app_logout') }}" class="btn btn-outline-warning">🚪 {{ 'nav.logout'|trans }}</a>
         </div>
     </div>
 </div>

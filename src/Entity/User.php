@@ -53,10 +53,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class, orphanRemoval: true)]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, Address>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Address::class, orphanRemoval: true)]
+    private Collection $addresses;
+
     public function __construct()
     {
         $this->creditCards = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
     }
 
     // === Identité ===
@@ -199,6 +206,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->orders->removeElement($order)) {
             if ($order->getUser() === $this) {
                 $order->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Address>
+     */
+    public function getAddresses(): Collection
+    {
+        return $this->addresses;
+    }
+
+    public function addAddress(Address $address): static
+    {
+        if (!$this->addresses->contains($address)) {
+            $this->addresses->add($address);
+            $address->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddress(Address $address): static
+    {
+        if ($this->addresses->removeElement($address)) {
+            if ($address->getUser() === $this) {
+                $address->setUser(null);
             }
         }
 

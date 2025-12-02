@@ -66,3 +66,30 @@ Attention : Il vous faut PHP 8.2 pour faire fonctionner ce projet.
 - Documentation Firebase : https://firebase.google.com/docs/studio
 
 - Notez comment fonctionne votre projet dans le fichier README.md et mettez à jour ce fichier au fur et à mesure de l'avancement de votre projet pour aider les autres développeurs à comprendre comment fonctionne votre projet.
+
+## Démarrage rapide (base de données + fixtures)
+
+1. Configurer votre `.env.local` (exemple MySQL local) :
+   ```
+   DATABASE_URL="mysql://root:root@127.0.0.1:3306/skinmarket?serverVersion=8.0&charset=utf8mb4"
+   ```
+2. Créer la base de données :
+   ```
+   php bin/console doctrine:database:create
+   ```
+3. Lancer les migrations :
+   ```
+   php bin/console doctrine:migrations:migrate
+   ```
+4. Charger les fixtures complètes (catégories, statuts, utilisateurs, adresses, produits CS:GO, commandes) :
+   ```
+   php bin/console doctrine:fixtures:load
+   ```
+5. Démarrer le serveur Symfony :
+   ```
+   symfony server:start
+   ```
+
+## Comptes de test
+- Administrateur : `admin@skinmarket.test` / mot de passe `Admin123!`
+- Client : `player@skinmarket.test` / mot de passe `Player123!`

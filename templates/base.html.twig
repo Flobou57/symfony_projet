@@ -67,7 +67,7 @@
 <body data-controller="cart">
 <nav class="navbar navbar-expand-lg navbar-dark mb-4 shadow-sm">
     <div class="container">
-        <a class="navbar-brand" href="{{ path('app_home') }}">🌙 SkinMarket</a>
+        <a class="navbar-brand" href="{{ path('app_shop_index') }}">🌙 SkinMarket</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -126,7 +126,7 @@
                                 <li><hr class="dropdown-divider"></li>
                             {% endif %}
                             <li>
-                                <a class="dropdown-item text-light" href="{{ path('app_profile') }}">👤 Profil</a>
+                                <a class="dropdown-item text-light" href="{{ path('app_profile') }}">👤 {{ 'nav.profile'|trans }}</a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>

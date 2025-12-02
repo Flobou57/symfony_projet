@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Form\AddressType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,6 +20,20 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email')
+            ->add('firstName', TextType::class, [
+                'required' => true,
+                'label' => 'Prénom',
+                'constraints' => [
+                    new NotBlank(['message' => 'Merci de saisir un prénom']),
+                ],
+            ])
+            ->add('lastName', TextType::class, [
+                'required' => true,
+                'label' => 'Nom',
+                'constraints' => [
+                    new NotBlank(['message' => 'Merci de saisir un nom']),
+                ],
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -42,6 +58,10 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+            ])
+            ->add('address', AddressType::class, [
+                'mapped' => false,
+                'label' => false,
             ])
         ;
     }

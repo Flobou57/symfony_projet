@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Entity\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +27,14 @@ class RegistrationController extends AbstractController
 
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+
+            // Adresse : créer et lier à l’utilisateur
+            /** @var \App\Entity\Address $address */
+            $address = $form->get('address')->getData();
+            if ($address instanceof Address) {
+                $address->setUser($user);
+                $entityManager->persist($address);
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();

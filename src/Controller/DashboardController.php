@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\OrderRepository;
+use App\Repository\ProductStatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,7 @@ class DashboardController extends AbstractController
         ProductRepository $productRepository,
         CategoryRepository $categoryRepository,
         OrderRepository $orderRepository,
+        ProductStatusRepository $productStatusRepository,
         EntityManagerInterface $em
     ): Response {
         // 1️⃣ Nombre de produits par catégorie
@@ -33,11 +35,18 @@ class DashboardController extends AbstractController
 
         // 3️⃣ Ratio des statuts produits
         $totalProducts = $productRepository->count([]);
-        $statusCounts = [
-            'En stock' => $productRepository->count(['status' => 1]),
-            'Rupture' => $productRepository->count(['status' => 2]),
-            'Précommande' => $productRepository->count(['status' => 3]),
+        $statusCounts = [];
+        $statusLabels = [
+            'Disponible' => 'En stock',
+            'En rupture de stock' => 'Rupture',
+            'En précommande' => 'Précommande',
         ];
+
+        foreach ($statusLabels as $label => $display) {
+            $statusEntity = $productStatusRepository->findOneBy(['label' => $label]);
+            $count = $statusEntity ? $productRepository->count(['status' => $statusEntity]) : 0;
+            $statusCounts[$display] = $count;
+        }
 
         $ratios = [];
         foreach ($statusCounts as $status => $count) {

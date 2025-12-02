@@ -37,12 +37,14 @@ class ShopController extends AbstractController
     ): Response {
         $category = $request->query->get('category');
         $status = $request->query->get('status');
+        $query = $request->query->get('q');
 
-        $criteria = [];
-        if (!empty($category)) $criteria['category'] = $category;
-        if (!empty($status)) $criteria['status'] = $status;
-
-        $products = $productRepository->findBy($criteria);
+        $products = $productRepository->search(
+            $query ?: null,
+            $category ? (int)$category : null,
+            $status ? (int)$status : null,
+            100
+        );
 
         return $this->render('shop/index.html.twig', [
             'products' => $products,
@@ -50,6 +52,7 @@ class ShopController extends AbstractController
             'statuses' => $statusRepository->findAll(),
             'selectedCategory' => $category,
             'selectedStatus' => $status,
+            'selectedQuery' => $query,
         ]);
     }
 

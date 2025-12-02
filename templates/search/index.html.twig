@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche produits{% endblock %}
+
+{% block body %}
+<div class="container text-light">
+    <h1 class="text-info mb-4">🔍 Recherche dynamique</h1>
+
+    {{ form_start(form, {'attr': {'data-controller': 'live', 'data-live-name': 'search-form'}}) }}
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                {{ form_row(form.query) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.category) }}
+            </div>
+        </div>
+    {{ form_end(form) }}
+
+    <live-component name="product_search"
+        query="{{ initialQuery }}"
+        categoryId="{{ initialCategoryId }}">
+    </live-component>
+</div>
+{% endblock %}
