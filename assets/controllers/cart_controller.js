@@ -5,6 +5,7 @@ export default class extends Controller {
 
     connect() {
         console.log("Contrôleur du panier connecté !");
+        this.refreshSummary();
     }
 
     /**
@@ -28,6 +29,26 @@ export default class extends Controller {
         } catch (e) {
             console.error(e);
             this.showMessage("Une erreur est survenue.");
+        }
+    }
+
+    /**
+     * Récupère le résumé du panier (count/total) au chargement
+     */
+    async refreshSummary() {
+        try {
+            const response = await fetch("/shop/cart/summary", {
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+            });
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+            this.updateCartDisplay(data);
+        } catch (e) {
+            console.error("Erreur lors de la récupération du résumé panier", e);
         }
     }
 

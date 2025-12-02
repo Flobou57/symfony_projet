@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter une carte{% endblock %}
+{% block title %}{{ 'credit_card.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5 text-light">
     <div class="card bg-dark border-info shadow-lg p-5 mx-auto" style="max-width: 600px;">
-        <h2 class="text-center mb-4 text-info fw-bold">💳 Ajouter une carte bancaire</h2>
+        <h2 class="text-center mb-4 text-info fw-bold">💳 {{ 'credit_card.title'|trans }}</h2>
 
         {{ form_start(form) }}
         <div class="mb-3">
@@ -25,7 +25,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <button class="btn btn-info px-5 py-2 fw-bold shadow-sm rounded-pill">Enregistrer la carte</button>
+            <button class="btn btn-info px-5 py-2 fw-bold shadow-sm rounded-pill">{{ 'credit_card.save'|trans }}</button>
         </div>
         {{ form_end(form) }}
     </div>

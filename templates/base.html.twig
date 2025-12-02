@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" data-bs-theme="dark">
+<html lang="{{ app.request.locale|default(app.request.defaultLocale|default('fr')) }}" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,18 +76,21 @@
             <!-- Liens principaux -->
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_shop_index') }}">🛍️ Boutique</a>
+                    <a class="nav-link" href="{{ path('app_shop_index') }}">🛍️ {{ 'nav.shop'|trans }}</a>
                 </li>
 
                 {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_admin_dashboard') }}">📊 Dashboard</a>
+                        <a class="nav-link" href="{{ path('app_product_index') }}">📦 {{ 'nav.products'|trans }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_product_index') }}">📦 Produits</a>
+                        <a class="nav-link" href="{{ path('app_category_index') }}">📚 {{ 'nav.categories'|trans }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_category_index') }}">📚 Catégories</a>
+                        <a class="nav-link" href="{{ path('app_admin_orders') }}">🧾 {{ 'nav.orders'|trans }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_admin_users') }}">👥 {{ 'nav.users'|trans }}</a>
                     </li>
                 {% endif %}
             </ul>
@@ -96,9 +99,18 @@
             <ul class="navbar-nav align-items-center">
                 <li class="nav-item position-relative me-3">
                     <a href="{{ path('app_shop_cart') }}" class="nav-link fw-bold text-info">
-                        🧺 <span data-cart-target="count">{{ app.session.get('cart')|length }}</span>
+                        {% set cart = cart_summary() %}
+                        🧺 <span data-cart-target="count">{{ cart.count }}</span>
                     </a>
-                    <small class="text-muted ms-1" data-cart-target="total">0.00 €</small>
+                    <small class="text-muted ms-1" data-cart-target="total">{{ cart.total|number_format(2, '.', ' ') }} €</small>
+                </li>
+
+                <li class="nav-item">
+                    {% set currentLocale = app.request.locale|default(app.request.defaultLocale|default('fr')) %}
+                    {% set targetLocale = currentLocale == 'fr' ? 'en' : 'fr' %}
+                    <a class="nav-link" href="{{ path('app_locale_switch', {'_locale': targetLocale}) }}">
+                        🌐 {{ 'nav.switch_to'|trans({'%locale%': targetLocale|upper}) }}
+                    </a>
                 </li>
 
                 {% if app.user %}
@@ -109,18 +121,18 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             {% if 'ROLE_ADMIN' in app.user.roles %}
                                 <li>
-                                    <a class="dropdown-item text-light" href="{{ path('app_admin_dashboard') }}">📊 Tableau de bord</a>
+                                    <a class="dropdown-item text-light" href="{{ path('app_admin_dashboard') }}">📊 {{ 'nav.dashboard'|trans }}</a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                             {% endif %}
                             <li>
-                                <a class="dropdown-item text-light" href="{{ path('app_logout') }}">🚪 Déconnexion</a>
+                                <a class="dropdown-item text-light" href="{{ path('app_logout') }}">🚪 {{ 'nav.logout'|trans }}</a>
                             </li>
                         </ul>
                     </li>
                 {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Connexion</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Inscription</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">{{ 'nav.login'|trans }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">{{ 'nav.register'|trans }}</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -149,7 +161,7 @@
 </main>
 
 <footer>
-    <p>© {{ "now"|date("Y") }} SkinMarket - Tous droits réservés.</p>
+    <p>{{ 'footer.rights'|trans({'%year%': "now"|date("Y")}) }}</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

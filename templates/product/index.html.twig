@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des produits{% endblock %}
+{% block title %}{{ 'product.index_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5 text-light">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-info">🛒 Liste des produits</h1>
-        <a href="{{ path('app_product_new') }}" class="btn btn-success btn-lg">➕ Ajouter</a>
+        <h1 class="text-info">🛒 {{ 'product.index_title'|trans }}</h1>
+        <a href="{{ path('app_product_new') }}" class="btn btn-success btn-lg">➕ {{ 'product.add'|trans }}</a>
     </div>
 
     <!-- 🔍 Filtres combinés -->
@@ -15,9 +15,9 @@
             <div class="row align-items-end g-3">
                 <!-- Filtre catégorie -->
                 <div class="col-md-5">
-                    <label for="category" class="form-label fw-bold text-info">Filtrer par catégorie :</label>
+                    <label for="category" class="form-label fw-bold text-info">{{ 'product.filter_category'|trans }}</label>
                     <select name="category" id="category" class="form-select bg-dark text-light border-secondary">
-                        <option value="">-- Toutes les catégories --</option>
+                        <option value="">{{ 'shop.filter_category_placeholder'|trans }}</option>
                         {% for category in categories %}
                             <option value="{{ category.id }}" {% if selectedCategoryId == category.id %}selected{% endif %}>
                                 {{ category.name }}
@@ -28,20 +28,22 @@
 
                 <!-- Filtre statut -->
                 <div class="col-md-5">
-                    <label for="status" class="form-label fw-bold text-info">Filtrer par statut :</label>
+                    <label for="status" class="form-label fw-bold text-info">{{ 'product.filter_status'|trans }}</label>
                     <select name="status" id="status" class="form-select bg-dark text-light border-secondary">
-                        <option value="">-- Tous les statuts --</option>
+                        <option value="">{{ 'shop.filter_status_placeholder'|trans }}</option>
                         {% for s in statuses %}
-                            <option value="{{ s }}" {% if selectedStatus == s %}selected{% endif %}>{{ s }}</option>
+                            <option value="{{ s }}" {% if selectedStatus == s %}selected{% endif %}>
+                                {{ ('status_labels.' ~ s)|trans }}
+                            </option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <!-- Boutons -->
                 <div class="col-md-2 text-end">
-                    <button type="submit" class="btn btn-primary w-100">🔎 Filtrer</button>
+                    <button type="submit" class="btn btn-primary w-100">🔎 {{ 'product.filter'|trans }}</button>
                     {% if selectedCategoryId or selectedStatus %}
-                        <a href="{{ path('app_product_index') }}" class="btn btn-outline-light w-100 mt-2">❌ Réinitialiser</a>
+                        <a href="{{ path('app_product_index') }}" class="btn btn-outline-light w-100 mt-2">❌ {{ 'product.reset'|trans }}</a>
                     {% endif %}
                 </div>
             </div>
@@ -54,12 +56,12 @@
             <thead>
                 <tr class="text-info">
                     <th>ID</th>
-                    <th>Nom</th>
-                    <th>Prix</th>
-                    <th>Stock</th>
-                    <th>Catégorie</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
+                    <th>{{ 'product.name'|default('Nom') }}</th>
+                    <th>{{ 'product.price'|default('Prix') }}</th>
+                    <th>{{ 'product.stock'|default('Stock') }}</th>
+                    <th>{{ 'product.category'|trans }}</th>
+                    <th>{{ 'product.status'|default('Statut') }}</th>
+                    <th>{{ 'admin.users_actions'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,24 +73,26 @@
                         <td>{{ product.stock }}</td>
                         <td>{{ product.category ? product.category.name : '—' }}</td>
                         <td>
-                            {% if product.status == 'Disponible' %}
-                                <span class="badge bg-success">{{ product.status }}</span>
-                            {% elseif product.status == 'En rupture de stock' %}
-                                <span class="badge bg-danger">{{ product.status }}</span>
-                            {% elseif product.status == 'En précommande' %}
-                                <span class="badge bg-warning text-dark">{{ product.status }}</span>
+                            {% set statusLabel = product.status %}
+                            {% set statusKey = 'status_labels.' ~ statusLabel %}
+                            {% if statusLabel == 'Disponible' %}
+                                <span class="badge bg-success">{{ statusKey|trans }}</span>
+                            {% elseif statusLabel == 'En rupture de stock' %}
+                                <span class="badge bg-danger">{{ statusKey|trans }}</span>
+                            {% elseif statusLabel == 'En précommande' %}
+                                <span class="badge bg-warning text-dark">{{ statusKey|trans }}</span>
                             {% else %}
                                 <span class="badge bg-secondary">N/A</span>
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-outline-info btn-sm">👁️ Voir</a>
-                            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-warning btn-sm">✏️ Modifier</a>
+                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-outline-info btn-sm">👁️ {{ 'common.view'|trans }}</a>
+                            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-warning btn-sm">✏️ {{ 'product.edit'|trans }}</a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center text-muted">Aucun produit trouvé.</td>
+                        <td colspan="7" class="text-center text-muted">{{ 'product.no_results'|trans }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

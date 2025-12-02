@@ -7,17 +7,23 @@ use App\Entity\OrderItem;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductStatusRepository;
+use App\Service\CartService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/shop')]
 class ShopController extends AbstractController
 {
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
+
     /**
      * 🛍️ Affichage de la boutique
      */
@@ -59,17 +65,36 @@ class ShopController extends AbstractController
         $product = $productRepository->find($id);
 
         if (!$product) {
-            $this->addFlash('danger', 'Produit introuvable.');
+            $this->addFlash('danger', $this->translator->trans('flash.product_not_found'));
             return $this->redirectToRoute('app_shop_index');
         }
 
         if ($product->getStock() <= 0) {
-            $this->addFlash('danger', "❌ Le produit « {$product->getName()} » est en rupture de stock.");
+            $this->addFlash('danger', $this->translator->trans('flash.out_of_stock', [
+                '%name%' => $product->getName(),
+            ]));
             return $this->redirectToRoute('app_shop_index');
         }
 
         $cart = $session->get('cart', []);
-        $cart[$id] = ($cart[$id] ?? 0) + 1;
+        $currentQty = $cart[$id] ?? 0;
+
+        // Empêche de dépasser le stock disponible
+        if ($currentQty >= $product->getStock()) {
+            $message = $this->translator->trans('flash.cart_limit', [
+                '%name%' => $product->getName(),
+                '%stock%' => $product->getStock(),
+            ]);
+
+            if ($request->isXmlHttpRequest()) {
+                return new JsonResponse(['error' => $message], Response::HTTP_BAD_REQUEST);
+            }
+
+            $this->addFlash('danger', $message);
+            return $this->redirectToRoute('app_shop_index');
+        }
+
+        $cart[$id] = $currentQty + 1;
         $session->set('cart', $cart);
 
         $total = 0;
@@ -84,8 +109,17 @@ class ShopController extends AbstractController
             return new JsonResponse(['total' => $total, 'count' => array_sum($cart)]);
         }
 
-        $this->addFlash('success', '🛒 Produit ajouté au panier !');
+        $this->addFlash('success', $this->translator->trans('flash.cart_added'));
         return $this->redirectToRoute('app_shop_index');
+    }
+
+    /**
+     * 📊 Résumé du panier pour rafraîchissement AJAX
+     */
+    #[Route('/cart/summary', name: 'app_shop_cart_summary', methods: ['GET'])]
+    public function cartSummary(CartService $cartService): JsonResponse
+    {
+        return new JsonResponse($cartService->getSummary());
     }
 
     /**
@@ -126,7 +160,7 @@ class ShopController extends AbstractController
         unset($cart[$id]);
         $session->set('cart', $cart);
 
-        $this->addFlash('info', '❌ Produit retiré du panier.');
+        $this->addFlash('info', $this->translator->trans('flash.product_removed'));
         return $this->redirectToRoute('app_shop_cart');
     }
 
@@ -137,7 +171,7 @@ class ShopController extends AbstractController
     public function clearCart(SessionInterface $session): Response
     {
         $session->remove('cart');
-        $this->addFlash('warning', '🧹 Panier vidé avec succès.');
+        $this->addFlash('warning', $this->translator->trans('flash.cart_cleared'));
         return $this->redirectToRoute('app_shop_cart');
     }
 
@@ -155,12 +189,12 @@ class ShopController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            $this->addFlash('warning', 'Veuillez vous connecter pour valider votre commande.');
+            $this->addFlash('warning', $this->translator->trans('flash.login_required'));
             return $this->redirectToRoute('app_login');
         }
 
         if (empty($cart)) {
-            $this->addFlash('warning', 'Votre panier est vide.');
+            $this->addFlash('warning', $this->translator->trans('flash.cart_empty'));
             return $this->redirectToRoute('app_shop_cart');
         }
 
@@ -186,7 +220,7 @@ class ShopController extends AbstractController
             $cvv = $request->request->get('cvv');
 
             if (empty($cardNumber) || empty($expiration) || empty($cvv)) {
-                $this->addFlash('danger', 'Veuillez remplir toutes les informations de carte.');
+                $this->addFlash('danger', $this->translator->trans('flash.card_info_missing'));
                 return $this->redirectToRoute('app_shop_checkout');
             }
 
@@ -194,11 +228,15 @@ class ShopController extends AbstractController
             foreach ($cart as $id => $qty) {
                 $product = $productRepository->find($id);
                 if (!$product) {
-                    $this->addFlash('danger', "Le produit #$id n'existe plus.");
+                    $this->addFlash('danger', $this->translator->trans('flash.product_missing', [
+                        '%id%' => $id,
+                    ]));
                     return $this->redirectToRoute('app_shop_cart');
                 }
                 if ($product->getStock() < $qty) {
-                    $this->addFlash('danger', "❌ Le produit « {$product->getName()} » n'est plus en stock.");
+                    $this->addFlash('danger', $this->translator->trans('flash.stock_unavailable', [
+                        '%name%' => $product->getName(),
+                    ]));
                     return $this->redirectToRoute('app_shop_cart');
                 }
             }
@@ -216,7 +254,9 @@ class ShopController extends AbstractController
                 if (!$product) continue;
 
                 if ($product->getStock() < $qty) {
-                    $this->addFlash('danger', "❌ Le produit « {$product->getName()} » n'est plus en stock.");
+                    $this->addFlash('danger', $this->translator->trans('flash.stock_unavailable', [
+                        '%name%' => $product->getName(),
+                    ]));
                     return $this->redirectToRoute('app_shop_cart');
                 }
 
@@ -238,7 +278,9 @@ class ShopController extends AbstractController
             // 🔄 Vide le panier
             $session->remove('cart');
 
-            $this->addFlash('success', '✅ Paiement validé avec la carte **** ' . substr($cardNumber, -4));
+            $this->addFlash('success', $this->translator->trans('flash.payment_success', [
+                '%last4%' => substr($cardNumber, -4),
+            ]));
             return $this->redirectToRoute('app_shop_index');
         }
 

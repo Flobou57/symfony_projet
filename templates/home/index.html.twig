@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil - SkinMarket{% endblock %}
+{% block title %}{{ 'home.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container text-center mt-5">
-    <h1>Bienvenue sur <span style="color: #ffcc00;">SkinMarket</span> 🎯</h1>
-    <p>Gérez vos skins CS:GO, vos catégories et vos produits facilement.</p>
+    <h1>{{ 'home.headline'|trans }}</h1>
+    <p>{{ 'home.subtitle'|trans }}</p>
 
-    <a href="{{ path('app_category_index') }}" class="btn btn-primary m-2">Voir les Catégories</a>
-    <a href="{{ path('app_product_index') }}" class="btn btn-success m-2">Voir les Produits</a>
+    <a href="{{ path('app_category_index') }}" class="btn btn-primary m-2">{{ 'home.view_categories'|trans }}</a>
+    <a href="{{ path('app_product_index') }}" class="btn btn-success m-2">{{ 'home.view_products'|trans }}</a>
 </div>
 {% endblock %}

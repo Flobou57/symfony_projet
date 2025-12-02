@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Paiement sécurisé{% endblock %}
+{% block title %}{{ 'checkout.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5 text-light">
     <div class="card bg-dark border-info shadow-lg p-5 mx-auto" style="max-width: 700px;">
-        <h2 class="text-center text-info mb-4 fw-bold">💳 Paiement sécurisé</h2>
-        <p class="text-center text-muted">Veuillez saisir vos informations de paiement pour finaliser la commande</p>
+        <h2 class="text-center text-info mb-4 fw-bold">💳 {{ 'checkout.title'|trans }}</h2>
+        <p class="text-center text-muted">{{ 'checkout.intro'|trans }}</p>
 
         <form method="post" novalidate>
             <div class="mb-3">
-                <label class="form-label">Numéro de carte</label>
+                <label class="form-label">{{ 'checkout.card_number'|trans }}</label>
                 <input type="text" 
                        name="card_number"
                        pattern="\d{16}" 
@@ -22,7 +22,7 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Date d’expiration (MM/AA)</label>
+                    <label class="form-label">{{ 'checkout.expiration'|trans }}</label>
                     <input type="text" 
                            name="expiration" 
                            pattern="\d{2}/\d{2}"
@@ -32,7 +32,7 @@
                            required>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">CVV</label>
+                    <label class="form-label">{{ 'checkout.cvv'|trans }}</label>
                     <input type="text" 
                            name="cvv"
                            pattern="\d{3}"
@@ -44,13 +44,13 @@
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-info px-5 py-2 fw-bold rounded-pill shadow-sm">💰 Payer maintenant</button>
+                <button type="submit" class="btn btn-info px-5 py-2 fw-bold rounded-pill shadow-sm">💰 {{ 'checkout.pay_now'|trans }}</button>
             </div>
         </form>
 
         <hr class="border-info my-4">
 
-        <h5 class="text-center text-info">🧾 Récapitulatif</h5>
+        <h5 class="text-center text-info">🧾 {{ 'checkout.summary'|trans }}</h5>
         <ul class="list-group bg-dark border-0">
             {% for item in items %}
                 <li class="list-group-item bg-dark text-light border-info d-flex justify-content-between">
@@ -59,7 +59,7 @@
                 </li>
             {% endfor %}
             <li class="list-group-item bg-info text-dark d-flex justify-content-between fw-bold">
-                <span>Total</span>
+                <span>{{ 'checkout.total'|trans }}</span>
                 <span>{{ total }} €</span>
             </li>
         </ul>

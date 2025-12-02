@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter une catégorie{% endblock %}
+{% block title %}{{ 'category.new_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5 text-light">
     <div class="card bg-dark border-secondary shadow-lg p-4">
-        <h1 class="text-center mb-4 text-info">➕ Ajouter une catégorie</h1>
+        <h1 class="text-center mb-4 text-info">➕ {{ 'category.new_title'|trans }}</h1>
 
         {{ form_start(form) }}
         <div class="mb-3">
@@ -14,8 +14,8 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success btn-lg">💾 Enregistrer</button>
-            <a href="{{ path('app_category_index') }}" class="btn btn-outline-light btn-lg">↩️ Retour</a>
+            <button type="submit" class="btn btn-success btn-lg">💾 {{ 'common.save'|trans }}</button>
+            <a href="{{ path('app_category_index') }}" class="btn btn-outline-light btn-lg">↩️ {{ 'common.back'|trans }}</a>
         </div>
         {{ form_end(form) }}
     </div>

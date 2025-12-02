@@ -45,6 +45,7 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/product, roles: ROLE_ADMIN }
         - { path: ^/category, roles: ROLE_ADMIN }
+        
 
 when@test:
     security:

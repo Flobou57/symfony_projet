@@ -1,21 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Boutique{% endblock %}
+{% block title %}{{ 'nav.shop'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5 text-light" data-controller="filter">
-    <h1 class="mb-4 text-info text-center fw-bold">🛍️ Bienvenue dans la Boutique SkinMarket</h1>
+    <h1 class="mb-4 text-info text-center fw-bold">🛍️ {{ 'shop.title'|trans }}</h1>
 
     <!-- 🔎 Filtres dynamiques -->
     <form class="mb-5 bg-dark p-3 rounded border border-info shadow-sm">
         <div class="row g-3 align-items-end">
             <div class="col-md-5">
-                <label class="form-label text-info fw-bold">Filtrer par catégorie :</label>
+                <label class="form-label text-info fw-bold">{{ 'shop.filter_category'|trans }}</label>
                 <select data-filter-target="category"
                         name="category"
                         class="form-select bg-dark text-light border-info"
                         data-action="change->filter#updateFilters">
-                    <option value="">Toutes les catégories</option>
+                    <option value="">{{ 'shop.filter_category_placeholder'|trans }}</option>
                     {% for category in categories %}
                         <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
                             {{ category.name }}
@@ -25,15 +25,15 @@
             </div>
 
             <div class="col-md-5">
-                <label class="form-label text-info fw-bold">Filtrer par statut :</label>
+                <label class="form-label text-info fw-bold">{{ 'shop.filter_status'|trans }}</label>
                 <select data-filter-target="status"
                         name="status"
                         class="form-select bg-dark text-light border-info"
                         data-action="change->filter#updateFilters">
-                    <option value="">Tous les statuts</option>
+                    <option value="">{{ 'shop.filter_status_placeholder'|trans }}</option>
                     {% for s in statuses %}
                         <option value="{{ s.id }}" {% if selectedStatus == s.id %}selected{% endif %}>
-                            {{ s.label }}
+                            {{ ('status_labels.' ~ s.label)|trans }}
                         </option>
                     {% endfor %}
                 </select>
@@ -43,7 +43,7 @@
                 <button type="button"
                         class="btn btn-info w-100 fw-bold"
                         data-action="click->filter#updateFilters">
-                    Filtrer 🔍
+                    {{ 'shop.filter_button'|trans }} 🔍
                 </button>
             </div>
         </div>
@@ -57,7 +57,7 @@
     <!-- 🛒 Bouton panier -->
     <div class="text-center mt-4">
         <a href="{{ path('app_shop_cart') }}" class="btn btn-info px-5 py-2 fw-bold shadow-sm">
-            Voir mon panier 🧺
+            {{ 'shop.cart_button'|trans }}
         </a>
     </div>
 </div>

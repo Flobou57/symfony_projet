@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tableau de bord Admin{% endblock %}
+{% block title %}{{ 'admin.dashboard.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5 text-light">
-    <h1 class="text-info text-center mb-5 fw-bold">📊 Tableau de bord administrateur</h1>
+    <h1 class="text-info text-center mb-5 fw-bold">📊 {{ 'admin.dashboard.heading'|trans }}</h1>
 
     <!-- Bloc 1 : Produits par catégorie -->
     <div class="card bg-dark border-info mb-4 p-4">
-        <h4 class="text-info mb-3">📦 Produits par catégorie</h4>
+        <h4 class="text-info mb-3">📦 {{ 'admin.dashboard.products_by_category'|trans }}</h4>
         <ul class="list-group list-group-flush">
             {% for category, count in productsByCategory %}
                 <li class="list-group-item bg-dark text-light d-flex justify-content-between">
@@ -16,22 +16,22 @@
                     <strong>{{ count }}</strong>
                 </li>
             {% else %}
-                <li class="list-group-item bg-dark text-muted">Aucune catégorie trouvée.</li>
+                <li class="list-group-item bg-dark text-muted">{{ 'category.none'|trans }}</li>
             {% endfor %}
         </ul>
     </div>
 
     <!-- Bloc 2 : Dernières commandes -->
     <div class="card bg-dark border-info mb-4 p-4">
-        <h4 class="text-info mb-3">🧾 5 dernières commandes</h4>
+        <h4 class="text-info mb-3">🧾 {{ 'admin.dashboard.last_orders'|trans }}</h4>
         <table class="table table-dark table-striped align-middle">
             <thead class="table-info text-dark">
                 <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Client</th>
-                    <th>Total (€)</th>
-                    <th>Statut</th>
+                    <th>{{ 'admin.orders_id'|trans }}</th>
+                    <th>{{ 'admin.orders_date'|trans }}</th>
+                    <th>{{ 'admin.dashboard.customer'|trans }}</th>
+                    <th>{{ 'admin.orders_total'|trans }}</th>
+                    <th>{{ 'admin.orders_status'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,10 +41,11 @@
                         <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
                         <td>{{ order.user.email }}</td>
                         <td>{{ order.total }}</td>
-                        <td><span class="badge bg-{{ order.status == 'livrée' ? 'success' : 'secondary' }}">{{ order.status }}</span></td>
+                        {% set statusKey = order.status == 'livrée' ? 'admin.status_delivered' : (order.status == 'en attente' ? 'admin.status_pending' : order.status) %}
+                        <td><span class="badge bg-{{ order.status == 'livrée' ? 'success' : 'secondary' }}">{{ statusKey|trans }}</span></td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="5" class="text-center text-muted">Aucune commande trouvée.</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted">{{ 'admin.orders_none'|trans }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -52,12 +53,13 @@
 
     <!-- Bloc 3 : Ratio disponibilité -->
     <div class="card bg-dark border-info mb-4 p-4">
-        <h4 class="text-info mb-3">⚖️ Disponibilité des produits</h4>
+        <h4 class="text-info mb-3">⚖️ {{ 'admin.dashboard.availability'|trans }}</h4>
         <div class="row text-center">
             {% for label, ratio in ratios %}
                 <div class="col-md-4">
                     <div class="p-3 border rounded bg-dark shadow-sm">
-                        <h5 class="text-light">{{ label }}</h5>
+                        {% set statusKey = 'status_labels.' ~ label %}
+                        <h5 class="text-light">{{ statusKey|trans }}</h5>
                         <p class="text-info fw-bold">{{ ratio }}%</p>
                     </div>
                 </div>
@@ -67,12 +69,12 @@
 
     <!-- Bloc 4 : Montant total des ventes -->
     <div class="card bg-dark border-info p-4 mb-5">
-        <h4 class="text-info mb-3">💰 Montant total des ventes (6 derniers mois)</h4>
+        <h4 class="text-info mb-3">💰 {{ 'admin.dashboard.sales_title'|trans }}</h4>
         <table class="table table-dark table-striped">
             <thead class="table-info text-dark">
                 <tr>
-                    <th>Mois</th>
-                    <th>Total (€)</th>
+                    <th>{{ 'admin.dashboard.month'|trans }}</th>
+                    <th>{{ 'admin.orders_total'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -82,7 +84,7 @@
                         <td>{{ data.total|number_format(2, ',', ' ') }}</td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="2" class="text-center text-muted">Aucune vente enregistrée.</td></tr>
+                    <tr><td colspan="2" class="text-center text-muted">{{ 'admin.dashboard.no_sales'|trans }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>
