@@ -29,26 +29,26 @@
                 </thead>
             <tbody>
                 {% for item in items %}
-                    <tr>
-                        <td class="text-start">
-                            <div class="fw-bold">{{ item.product.name }}</div>
-                            <small class="text-muted">{{ item.product.category ? item.product.category.name : '—' }}</small>
-                        </td>
-                        <td>
-                            <form method="post"
-                                  action="{{ path('app_shop_update_quantity', { id: item.product.id }) }}"
-                                  class="d-flex align-items-center gap-2 justify-content-center"
-                                  data-action="submit->cart#updateQuantity">
-                                <input type="number"
-                                       name="quantity"
-                                       value="{{ item.quantity }}"
-                                       min="1"
-                                       max="{{ item.product.stock }}"
-                                       class="form-control form-control-sm bg-dark text-light border-info"
-                                       style="width: 90px;"
-                                       data-action="change->cart#updateQuantity keyup->cart#updateQuantity input->cart#updateQuantity">
-                            </form>
-                        </td>
+                <tr>
+                    <td class="text-start">
+                        <div class="fw-bold">{{ item.product.name }}</div>
+                        <small class="text-muted">{{ item.product.category ? item.product.category.name : '—' }}</small>
+                    </td>
+                    <td>
+                        <form method="post"
+                              action="{{ path('app_shop_update_quantity', { id: item.product.id }) }}"
+                              class="d-flex align-items-center gap-2 justify-content-center js-cart-qty-form"
+                              data-product-id="{{ item.product.id }}">
+                            <input type="number"
+                                   name="quantity"
+                                   value="{{ item.quantity }}"
+                                   min="1"
+                                   max="{{ item.product.stock }}"
+                                   class="form-control form-control-sm bg-dark text-light border-info"
+                                   style="width: 90px;"
+                                   data-product-id="{{ item.product.id }}">
+                        </form>
+                    </td>
                         <td>{{ item.product.price }} €</td>
                         <td data-cart-line-subtotal="{{ item.product.id }}">{{ item.subtotal }} €</td>
                         <td>
@@ -93,18 +93,18 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const qtyForms = document.querySelectorAll('form[action*="{{ path('app_shop_update_quantity', { id: 0 })|replace({'0':''}) }}"]');
+    const forms = document.querySelectorAll('.js-cart-qty-form');
+    const navTotal = document.querySelector('[data-cart-target="total"]');
+    const navCount = document.querySelector('[data-cart-target="count"]');
+    const pageTotal = document.querySelector('#cart-page-total');
 
     const updateTotals = (data) => {
-        const navTotal = document.querySelector('[data-cart-target="total"]');
-        const navCount = document.querySelector('[data-cart-target="count"]');
-        const pageTotal = document.querySelector('#cart-page-total');
         if (navTotal && typeof data.total !== 'undefined') navTotal.textContent = parseFloat(data.total).toFixed(2) + ' €';
         if (navCount && typeof data.count !== 'undefined') navCount.textContent = data.count;
         if (pageTotal && typeof data.total !== 'undefined') pageTotal.textContent = parseFloat(data.total).toFixed(2) + ' €';
     };
 
-    qtyForms.forEach((form) => {
+    forms.forEach((form) => {
         const input = form.querySelector('input[name="quantity"]');
         if (!input) return;
 

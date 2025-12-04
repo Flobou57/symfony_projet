@@ -59,4 +59,7 @@ return [
     '@symfony/ux-autocomplete' => [
         'version' => '2.31.0',
     ],
+    'controllers/cart_controller.js' => [
+        'path' => './assets/controllers/cart_controller.js',
+    ],
 ];

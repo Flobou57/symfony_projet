@@ -1,7 +1,7 @@
 import { startStimulusApp } from '@symfony/stimulus-bundle';
 import '@symfony/ux-autocomplete';
 import '@symfony/ux-live-component';
+import CartController from './controllers/cart_controller.js';
 
 const app = startStimulusApp();
-// register any custom, 3rd party controllers here
-// app.register('some_controller_name', SomeImportedController);
+app.register('cart', CartController);
