@@ -4,8 +4,12 @@
 
 {% block body %}
 <div class="container mt-5 text-light">
-    <div class="card bg-dark border-info shadow-lg p-4 mx-auto" style="max-width: 600px;">
-        <h2 class="text-center text-info mb-4">👤 {{ 'profile.heading'|trans }}</h2>
+    <div class="hero-section mb-4 p-4 p-lg-5 rounded">
+        <p class="badge bg-info text-dark mb-2">#Compte</p>
+        <h2 class="fw-bold mb-2">👤 {{ 'profile.heading'|trans }}</h2>
+        <p class="text-muted mb-0">Gérez vos informations personnelles et adresses.</p>
+    </div>
+    <div class="card bg-dark border-info shadow-lg p-4 mx-auto" style="max-width: 700px;">
 
         <dl class="row">
             <dt class="col-sm-4">{{ 'profile.email'|trans }}</dt>
@@ -75,4 +79,11 @@
         </div>
     </div>
 </div>
+<style>
+.hero-section {
+    background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%), #0f131a;
+    border: 1px solid rgba(13,202,240,0.2);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+</style>
 {% endblock %}

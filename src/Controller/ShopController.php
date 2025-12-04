@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Enum\OrderStatus;
+use App\Entity\Product;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductStatusRepository;
@@ -33,17 +34,23 @@ class ShopController extends AbstractController
         ProductRepository $productRepository,
         CategoryRepository $categoryRepository,
         ProductStatusRepository $statusRepository,
-        Request $request
+        Request $request,
+        \Knp\Component\Pager\PaginatorInterface $paginator
     ): Response {
         $category = $request->query->get('category');
         $status = $request->query->get('status');
         $query = $request->query->get('q');
 
-        $products = $productRepository->search(
+        $qb = $productRepository->searchQueryBuilder(
             $query ?: null,
             $category ? (int)$category : null,
-            $status ? (int)$status : null,
-            100
+            $status ? (int)$status : null
+        );
+
+        $products = $paginator->paginate(
+            $qb,
+            $request->query->getInt('page', 1),
+            9
         );
 
         return $this->render('shop/index.html.twig', [
@@ -53,6 +60,17 @@ class ShopController extends AbstractController
             'selectedCategory' => $category,
             'selectedStatus' => $status,
             'selectedQuery' => $query,
+        ]);
+    }
+
+    /**
+     * 🔍 Détail d’un produit
+     */
+    #[Route('/product/{id}', name: 'app_shop_product_show', methods: ['GET'])]
+    public function productShow(Product $product): Response
+    {
+        return $this->render('shop/show.html.twig', [
+            'product' => $product,
         ]);
     }
 
@@ -158,11 +176,35 @@ class ShopController extends AbstractController
      * ❌ Supprimer un produit du panier
      */
     #[Route('/remove/{id}', name: 'app_shop_remove')]
-    public function removeFromCart(int $id, SessionInterface $session): Response
+    public function removeFromCart(
+        int $id,
+        SessionInterface $session,
+        Request $request,
+        ProductRepository $productRepository
+    ): Response
     {
         $cart = $session->get('cart', []);
+        $removed = array_key_exists($id, $cart);
         unset($cart[$id]);
         $session->set('cart', $cart);
+
+        $total = 0;
+        $count = 0;
+        foreach ($cart as $productId => $qty) {
+            $p = $productRepository->find($productId);
+            if ($p) {
+                $total += $p->getPrice() * $qty;
+                $count += $qty;
+            }
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'success' => $removed,
+                'total' => $total,
+                'count' => $count,
+            ]);
+        }
 
         $this->addFlash('info', $this->translator->trans('flash.product_removed'));
         return $this->redirectToRoute('app_shop_cart');
@@ -176,6 +218,69 @@ class ShopController extends AbstractController
     {
         $session->remove('cart');
         $this->addFlash('warning', $this->translator->trans('flash.cart_cleared'));
+        return $this->redirectToRoute('app_shop_cart');
+    }
+
+    /**
+     * ✏️ Mettre à jour la quantité d’un produit dans le panier
+     */
+    #[Route('/update/{id}', name: 'app_shop_update_quantity', methods: ['POST'])]
+    public function updateQuantity(
+        int $id,
+        Request $request,
+        SessionInterface $session,
+        ProductRepository $productRepository
+    ): Response {
+        $quantity = max(1, (int) $request->request->get('quantity', 1));
+        $product = $productRepository->find($id);
+
+        if (!$product) {
+            $message = $this->translator->trans('flash.product_not_found');
+            if ($request->isXmlHttpRequest()) {
+                return new JsonResponse(['error' => $message], Response::HTTP_BAD_REQUEST);
+            }
+            $this->addFlash('danger', $message);
+            return $this->redirectToRoute('app_shop_cart');
+        }
+
+        if ($product->getStock() < $quantity) {
+            $message = $this->translator->trans('flash.stock_unavailable', [
+                '%name%' => $product->getName(),
+            ]);
+            if ($request->isXmlHttpRequest()) {
+                return new JsonResponse(['error' => $message], Response::HTTP_BAD_REQUEST);
+            }
+            $this->addFlash('danger', $message);
+            return $this->redirectToRoute('app_shop_cart');
+        }
+
+        $cart = $session->get('cart', []);
+        $cart[$id] = $quantity;
+        $session->set('cart', $cart);
+
+        // Recalcule total + count
+        $total = 0;
+        $count = 0;
+        foreach ($cart as $productId => $qty) {
+            $p = $productRepository->find($productId);
+            if ($p) {
+                $total += $p->getPrice() * $qty;
+                $count += $qty;
+            }
+        }
+        $lineSubtotal = $product->getPrice() * $quantity;
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'success' => true,
+                'total' => $total,
+                'count' => $count,
+                'productId' => $id,
+                'lineSubtotal' => $lineSubtotal,
+            ]);
+        }
+
+        $this->addFlash('success', 'Quantité mise à jour.');
         return $this->redirectToRoute('app_shop_cart');
     }
 

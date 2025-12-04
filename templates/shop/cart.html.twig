@@ -4,7 +4,11 @@
 
 {% block body %}
 <div class="container mt-5 text-light">
-    <h1 class="mb-4 text-info text-center fw-bold">🧺 {{ 'cart.title'|trans }}</h1>
+    <div class="hero-cart mb-4 p-4 p-lg-5 rounded">
+        <p class="badge bg-info text-dark mb-2">#Panier</p>
+        <h1 class="fw-bold mb-2">🧺 {{ 'cart.title'|trans }}</h1>
+        <p class="text-muted mb-0">Ajustez vos quantités en direct, sans recharger, avant de passer au paiement.</p>
+    </div>
 
     {% if items is empty %}
         <p class="text-center text-muted">{{ 'cart.empty'|trans }}</p>
@@ -12,36 +16,57 @@
             <a href="{{ path('app_shop_index') }}" class="btn btn-outline-info">⬅ {{ 'cart.back_shop'|trans }}</a>
         </div>
     {% else %}
-        <table class="table table-dark table-hover align-middle text-center border border-info">
-            <thead class="table-info text-dark">
-                <tr>
-                    <th>{{ 'cart.table_product'|trans }}</th>
-                    <th>{{ 'cart.table_quantity'|trans }}</th>
-                    <th>{{ 'cart.table_unit_price'|trans }}</th>
-                    <th>{{ 'cart.table_subtotal'|trans }}</th>
-                    <th>{{ 'cart.table_action'|trans }}</th>
-                </tr>
-            </thead>
+        <div class="card bg-dark border-info shadow-lg p-4">
+            <table class="table table-dark table-hover align-middle text-center border border-info mb-0">
+                <thead class="table-info text-dark">
+                    <tr>
+                        <th>{{ 'cart.table_product'|trans }}</th>
+                        <th>{{ 'cart.table_quantity'|trans }}</th>
+                        <th>{{ 'cart.table_unit_price'|trans }}</th>
+                        <th>{{ 'cart.table_subtotal'|trans }}</th>
+                        <th>{{ 'cart.table_action'|trans }}</th>
+                    </tr>
+                </thead>
             <tbody>
                 {% for item in items %}
                     <tr>
-                        <td>{{ item.product.name }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.product.price }} €</td>
-                        <td>{{ item.subtotal }} €</td>
-                        <td>
-                            <a href="{{ path('app_shop_remove', { id: item.product.id }) }}" class="btn btn-sm btn-outline-danger">❌ {{ 'cart.remove'|trans }}</a>
+                        <td class="text-start">
+                            <div class="fw-bold">{{ item.product.name }}</div>
+                            <small class="text-muted">{{ item.product.category ? item.product.category.name : '—' }}</small>
                         </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        <td>
+                            <form method="post"
+                                  action="{{ path('app_shop_update_quantity', { id: item.product.id }) }}"
+                                  class="d-flex align-items-center gap-2 justify-content-center"
+                                  data-action="submit->cart#updateQuantity">
+                                <input type="number"
+                                       name="quantity"
+                                       value="{{ item.quantity }}"
+                                       min="1"
+                                       max="{{ item.product.stock }}"
+                                       class="form-control form-control-sm bg-dark text-light border-info"
+                                       style="width: 90px;"
+                                       data-action="change->cart#updateQuantity keyup->cart#updateQuantity input->cart#updateQuantity">
+                            </form>
+                        </td>
+                        <td>{{ item.product.price }} €</td>
+                        <td data-cart-line-subtotal="{{ item.product.id }}">{{ item.subtotal }} €</td>
+                        <td>
+                            <a href="{{ path('app_shop_remove', { id: item.product.id }) }}"
+                               class="btn btn-sm btn-outline-danger"
+                               data-action="click->cart#remove">❌ {{ 'cart.remove'|trans }}</a>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <h4>{{ 'cart.total_label'|trans }} <span class="text-info">{{ total }} €</span></h4>
-            <div>
-                <a href="{{ path('app_shop_clear') }}" class="btn btn-outline-warning me-2">🧹 {{ 'cart.clear'|trans }}</a>
-                <a href="{{ path('app_shop_checkout') }}" class="btn btn-success">💳 {{ 'cart.checkout'|trans }}</a>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <h4>{{ 'cart.total_label'|trans }} <span class="text-info" data-cart-target="pageTotal" id="cart-page-total">{{ total }} €</span></h4>
+                <div>
+                    <a href="{{ path('app_shop_clear') }}" class="btn btn-outline-warning me-2">🧹 {{ 'cart.clear'|trans }}</a>
+                    <a href="{{ path('app_shop_checkout') }}" class="btn btn-success">💳 {{ 'cart.checkout'|trans }}</a>
+                </div>
             </div>
         </div>
     {% endif %}
@@ -58,5 +83,62 @@
     .btn-success:hover {
         background-color: #157347 !important;
     }
+    .hero-cart {
+        background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%),
+                    #0f131a;
+        border: 1px solid rgba(13,202,240,0.15);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const qtyForms = document.querySelectorAll('form[action*="{{ path('app_shop_update_quantity', { id: 0 })|replace({'0':''}) }}"]');
+
+    const updateTotals = (data) => {
+        const navTotal = document.querySelector('[data-cart-target="total"]');
+        const navCount = document.querySelector('[data-cart-target="count"]');
+        const pageTotal = document.querySelector('#cart-page-total');
+        if (navTotal && typeof data.total !== 'undefined') navTotal.textContent = parseFloat(data.total).toFixed(2) + ' €';
+        if (navCount && typeof data.count !== 'undefined') navCount.textContent = data.count;
+        if (pageTotal && typeof data.total !== 'undefined') pageTotal.textContent = parseFloat(data.total).toFixed(2) + ' €';
+    };
+
+    qtyForms.forEach((form) => {
+        const input = form.querySelector('input[name="quantity"]');
+        if (!input) return;
+
+        const handler = async (event) => {
+            event.preventDefault();
+            const url = form.getAttribute('action');
+            const fd = new FormData(form);
+            fd.set('quantity', input.value);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                    body: fd
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || data.error) {
+                    console.warn(data.error || 'Erreur de mise à jour');
+                    return;
+                }
+                // sous-total de ligne
+                const productId = data.productId;
+                const subtotalEl = document.querySelector(`[data-cart-line-subtotal="${productId}"]`);
+                if (subtotalEl && typeof data.lineSubtotal !== 'undefined') {
+                    subtotalEl.textContent = parseFloat(data.lineSubtotal).toFixed(2) + ' €';
+                }
+                updateTotals(data);
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        ['change', 'keyup', 'input'].forEach(evt => input.addEventListener(evt, handler));
+    });
+});
+</script>
 {% endblock %}

@@ -4,9 +4,13 @@
 
 {% block body %}
 <div class="container mt-5 text-light">
-    <div class="card bg-dark border-secondary shadow-lg p-4">
-        <h1 class="text-center mb-4 text-info">📁 {{ 'category.show_title'|trans }}</h1>
+    <div class="hero-section mb-4 p-4 p-lg-5 rounded">
+        <p class="badge bg-info text-dark mb-2">#Catégorie</p>
+        <h1 class="fw-bold mb-2">📁 {{ 'category.show_title'|trans }}</h1>
+        <p class="text-muted mb-0">Détails et produits associés.</p>
+    </div>
 
+    <div class="card bg-dark border-info shadow-lg p-4">
         <table class="table table-dark table-striped align-middle">
             <tbody>
                 <tr>
@@ -40,4 +44,11 @@
         </div>
     </div>
 </div>
+<style>
+.hero-section {
+    background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%), #0f131a;
+    border: 1px solid rgba(13,202,240,0.2);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+</style>
 {% endblock %}

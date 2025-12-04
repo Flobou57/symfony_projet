@@ -4,14 +4,19 @@
 
 {% block body %}
 <div class="container mt-5 text-light">
-    <div class="card bg-dark shadow-lg border-secondary p-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="text-info">{{ product.name }}</h1>
+    <div class="hero-section mb-4 p-4 p-lg-5 rounded">
+        <p class="badge bg-info text-dark mb-2">#Produit</p>
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="fw-bold mb-2">{{ product.name }}</h1>
+                <p class="text-muted mb-0">{{ product.category ? product.category.name : '—' }}</p>
+            </div>
             <a href="{{ path('app_product_index') }}" class="btn btn-outline-light">⬅️ {{ 'product.show_back'|trans }}</a>
         </div>
+    </div>
 
-        <div class="row">
-            <!-- Image du produit -->
+    <div class="card bg-dark shadow-lg border-info p-4">
+        <div class="row g-4">
             <div class="col-md-4">
                 {% if product.images|length > 0 %}
                     <img src="{{ product.images[0].url }}" alt="{{ product.name }}" class="img-fluid rounded shadow">
@@ -22,7 +27,6 @@
                 {% endif %}
             </div>
 
-            <!-- Détails du produit -->
             <div class="col-md-8">
                 <ul class="list-group list-group-flush bg-dark">
                     <li class="list-group-item bg-dark text-light">
@@ -61,4 +65,11 @@
         </div>
     </div>
 </div>
+<style>
+.hero-section {
+    background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%), #0f131a;
+    border: 1px solid rgba(13,202,240,0.2);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+</style>
 {% endblock %}

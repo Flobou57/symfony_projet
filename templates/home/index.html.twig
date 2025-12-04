@@ -1,13 +1,97 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'home.title'|trans }}{% endblock %}
+{% block title %}SkinMarket — Home{% endblock %}
 
 {% block body %}
-<div class="container text-center mt-5">
-    <h1>{{ 'home.headline'|trans }}</h1>
-    <p>{{ 'home.subtitle'|trans }}</p>
+<section class="hero-home text-light">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <p class="badge bg-info text-dark mb-3">#CSGO #Marketplace</p>
+                <h1 class="display-4 fw-bold mb-3">Skins premium, paiements sécurisés, expérience fluide.</h1>
+                <p class="lead text-muted mb-4">Parcourez les meilleures sélections d’armes, couteaux, gants et stickers, avec un panier dynamique et un backoffice complet.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ path('app_shop_index') }}" class="btn btn-info btn-lg text-dark fw-bold">Découvrir la boutique</a>
+                    {% if not app.user %}
+                        <a href="{{ path('app_register') }}" class="btn btn-outline-light btn-lg">Créer un compte</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                <div class="glass-card p-4">
+                    <h4 class="text-info mb-3">Stats en temps réel</h4>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <p class="h3 fw-bold text-light">10</p>
+                            <p class="text-muted small">Produits phares</p>
+                        </div>
+                        <div class="col-4">
+                            <p class="h3 fw-bold text-light">100%</p>
+                            <p class="text-muted small">Panier dynamique</p>
+                        </div>
+                        <div class="col-4">
+                            <p class="h3 fw-bold text-light">2 langues</p>
+                            <p class="text-muted small">FR / EN</p>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <p class="text-muted small mb-1">Comptes tests :</p>
+                        <p class="mb-0 small">Admin : admin@skinmarket.test / Admin123!</p>
+                        <p class="mb-0 small">Client : player@skinmarket.test / Player123!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <a href="{{ path('app_category_index') }}" class="btn btn-primary m-2">{{ 'home.view_categories'|trans }}</a>
-    <a href="{{ path('app_product_index') }}" class="btn btn-success m-2">{{ 'home.view_products'|trans }}</a>
-</div>
+<section class="container py-5 text-light">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card h-100 p-4">
+                <h5 class="text-info mb-2">Panier live</h5>
+                <p class="text-muted">Ajout, suppression, quantités en AJAX, total mis à jour en direct.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card h-100 p-4">
+                <h5 class="text-info mb-2">Backoffice & Dashboard</h5>
+                <p class="text-muted">Produits, catégories, commandes, utilisateurs, ratios de stock et ventes.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card h-100 p-4">
+                <h5 class="text-info mb-2">Internationalisation</h5>
+                <p class="text-muted">Site traduit FR/EN, switch de langue, statuts produits et flashs localisés.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.hero-home {
+    background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 25%),
+                radial-gradient(circle at 80% 0%, rgba(255,255,255,0.08), transparent 30%),
+                #0f131a;
+    border-bottom: 1px solid rgba(13,202,240,0.15);
+}
+.glass-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+.feature-card {
+    background: #1a1f2a;
+    border: 1px solid rgba(13,202,240,0.15);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+}
+</style>
 {% endblock %}

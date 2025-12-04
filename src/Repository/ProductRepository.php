@@ -17,12 +17,11 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @return Product[]
      */
-    public function search(?string $query = null, ?int $categoryId = null, ?int $statusId = null, int $limit = 20): array
+    public function searchQueryBuilder(?string $query = null, ?int $categoryId = null, ?int $statusId = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')
             ->leftJoin('p.category', 'c')->addSelect('c')
-            ->leftJoin('p.status', 's')->addSelect('s')
-            ->setMaxResults($limit);
+            ->leftJoin('p.status', 's')->addSelect('s');
 
         if ($categoryId) {
             $qb->andWhere('c.id = :cat')->setParameter('cat', $categoryId);
@@ -37,6 +36,17 @@ class ProductRepository extends ServiceEntityRepository
             $qb->andWhere('s.id = :status')->setParameter('status', $statusId);
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb;
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function search(?string $query = null, ?int $categoryId = null, ?int $statusId = null, int $limit = 20): array
+    {
+        return $this->searchQueryBuilder($query, $categoryId, $statusId)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -4,10 +4,14 @@
 
 {% block body %}
 <div class="container mt-5 text-light">
-    <h1 class="text-info text-center mb-5 fw-bold">📊 {{ 'admin.dashboard.heading'|trans }}</h1>
+    <div class="hero-section mb-4 p-4 p-lg-5 rounded">
+        <p class="badge bg-info text-dark mb-2">#Dashboard</p>
+        <h1 class="fw-bold mb-2">📊 {{ 'admin.dashboard.heading'|trans }}</h1>
+        <p class="text-muted mb-0">Vue synthétique : produits, commandes, ventes.</p>
+    </div>
 
     <!-- Bloc 1 : Produits par catégorie -->
-    <div class="card bg-dark border-info mb-4 p-4">
+    <div class="card bg-dark border-info mb-4 p-4 shadow-lg">
         <h4 class="text-info mb-3">📦 {{ 'admin.dashboard.products_by_category'|trans }}</h4>
         <ul class="list-group list-group-flush">
             {% for category, count in productsByCategory %}
@@ -22,7 +26,7 @@
     </div>
 
     <!-- Bloc 2 : Dernières commandes -->
-    <div class="card bg-dark border-info mb-4 p-4">
+    <div class="card bg-dark border-info mb-4 p-4 shadow-lg">
         <h4 class="text-info mb-3">🧾 {{ 'admin.dashboard.last_orders'|trans }}</h4>
         <table class="table table-dark table-striped align-middle">
             <thead class="table-info text-dark">
@@ -58,7 +62,7 @@
     </div>
 
     <!-- Bloc 3 : Ratio disponibilité -->
-    <div class="card bg-dark border-info mb-4 p-4">
+    <div class="card bg-dark border-info mb-4 p-4 shadow-lg">
         <h4 class="text-info mb-3">⚖️ {{ 'admin.dashboard.availability'|trans }}</h4>
         <div class="row text-center">
             {% for label, ratio in ratios %}
@@ -74,7 +78,7 @@
     </div>
 
     <!-- Bloc 4 : Montant total des ventes -->
-    <div class="card bg-dark border-info p-4 mb-5">
+    <div class="card bg-dark border-info p-4 mb-5 shadow-lg">
         <h4 class="text-info mb-3">💰 {{ 'admin.dashboard.sales_title'|trans }}</h4>
         <table class="table table-dark table-striped">
             <thead class="table-info text-dark">
@@ -98,6 +102,11 @@
 </div>
 
 <style>
+.hero-section {
+    background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%), #0f131a;
+    border: 1px solid rgba(13,202,240,0.2);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
 .card {
     transition: 0.3s;
 }

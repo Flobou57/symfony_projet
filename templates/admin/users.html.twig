@@ -2,8 +2,12 @@
 {% block title %}{{ 'admin.users_title'|trans }}{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h2 class="text-info mb-4 fw-bold">👥 {{ 'admin.users_heading'|trans }}</h2>
+<div class="container mt-4 text-light">
+    <div class="hero-section mb-4 p-4 p-lg-5 rounded">
+        <p class="badge bg-info text-dark mb-2">#Utilisateurs</p>
+        <h2 class="fw-bold mb-2">👥 {{ 'admin.users_heading'|trans }}</h2>
+        <p class="text-muted mb-0">Gérez les comptes et rôles.</p>
+    </div>
 
     <table class="table table-dark table-striped border-info align-middle shadow-sm">
         <thead class="table-info text-dark">
@@ -53,4 +57,11 @@
         {{ knp_pagination_render(users) }}
     </div>
 </div>
+<style>
+.hero-section {
+    background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%), #0f131a;
+    border: 1px solid rgba(13,202,240,0.2);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+</style>
 {% endblock %}

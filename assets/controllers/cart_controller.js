@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-    static targets = ["count", "total", "message"];
+    static targets = ["count", "total", "message", "pageTotal"];
 
     connect() {
         console.log("Contrôleur du panier connecté !");
@@ -58,6 +58,7 @@ export default class extends Controller {
     updateCartDisplay(data) {
         if (this.hasCountTarget) this.countTarget.textContent = data.count ?? "0";
         if (this.hasTotalTarget) this.totalTarget.textContent = (data.total ?? 0).toFixed(2) + " €";
+        if (this.hasPageTotalTarget) this.pageTotalTarget.textContent = (data.total ?? 0).toFixed(2) + " €";
     }
 
     /**
@@ -71,6 +72,82 @@ export default class extends Controller {
             setTimeout(() => {
                 this.messageTarget.classList.remove("show");
             }, 2000);
+        }
+    }
+
+    /**
+     * Supprime un produit du panier en AJAX
+     */
+    async remove(event) {
+        event.preventDefault();
+        const url = event.currentTarget.getAttribute("href");
+        try {
+            const response = await fetch(url, {
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+            });
+            const data = await response.json();
+
+            if (!response.ok || data.error) {
+                this.showMessage(data.error || "Erreur lors de la suppression.");
+                return;
+            }
+
+            // Retirer la ligne du DOM
+            const row = event.currentTarget.closest("tr");
+            if (row) row.remove();
+
+            // Mettre à jour totaux
+            this.updateCartDisplay(data);
+            this.showMessage("Produit retiré.");
+        } catch (e) {
+            console.error(e);
+            this.showMessage("Une erreur est survenue.");
+        }
+    }
+
+    /**
+     * Met à jour la quantité d’une ligne de panier en AJAX
+     */
+    async updateQuantity(event) {
+        event.preventDefault();
+        const form = event.target.closest("form");
+        if (!form) return;
+        const url = form.getAttribute("action");
+        const formData = new FormData(form);
+        if (event.target.name === "quantity") {
+            formData.set("quantity", event.target.value);
+        }
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Accept": "application/json",
+                },
+                body: formData,
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok || data.error) {
+                this.showMessage(data.error || "Erreur lors de la mise à jour.");
+                return;
+            }
+
+            // Mettre à jour le subtotal de la ligne
+            const productId = data.productId;
+            const subtotalEl = document.querySelector(`[data-cart-line-subtotal="${productId}"]`);
+            if (subtotalEl) {
+                subtotalEl.textContent = (data.lineSubtotal ?? 0).toFixed(2) + " €";
+            }
+
+            // Mettre à jour totaux (nav + page)
+            this.updateCartDisplay(data);
+            this.showMessage("Quantité mise à jour.");
+        } catch (e) {
+            console.error(e);
+            this.showMessage("Une erreur est survenue.");
         }
     }
 }

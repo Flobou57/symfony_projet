@@ -3,11 +3,15 @@
 {% block title %}{{ 'nav.shop'|trans }}{% endblock %}
 
 {% block body %}
-<div class="container mt-5 text-light" data-controller="filter">
-    <h1 class="mb-4 text-info text-center fw-bold">🛍️ {{ 'shop.title'|trans }}</h1>
+<div class="container mt-5 text-light">
+    <div class="hero-shop mb-4 p-4 p-lg-5 rounded">
+        <p class="badge bg-info text-dark mb-2">#Marketplace</p>
+        <h1 class="fw-bold mb-2">Boutique SkinMarket</h1>
+        <p class="text-muted mb-0">Filtres instantanés, panier dynamique et skins CS:GO premium.</p>
+    </div>
 
     <!-- 🔎 Filtres dynamiques -->
-    <form class="mb-5 bg-dark p-3 rounded border border-info shadow-sm">
+    <form class="mb-5 bg-dark p-3 rounded border border-info shadow-sm filter-card" method="get" action="{{ path('app_shop_index') }}">
         <div class="row g-3 align-items-end">
             <div class="col-md-4">
                 <label class="form-label text-info fw-bold">{{ 'shop.search_label'|default('Recherche')|trans }}</label>
@@ -16,16 +20,13 @@
                        value="{{ selectedQuery }}"
                        class="form-control bg-dark text-light border-info"
                        placeholder="{{ 'shop.search_placeholder'|trans }}"
-                       data-filter-target="query"
-                       data-action="change->filter#updateFilters keyup->filter#updateFilters">
+                       >
             </div>
 
             <div class="col-md-4">
                 <label class="form-label text-info fw-bold">{{ 'shop.filter_category'|trans }}</label>
-                <select data-filter-target="category"
-                        name="category"
-                        class="form-select bg-dark text-light border-info"
-                        data-action="change->filter#updateFilters">
+                <select name="category"
+                        class="form-select bg-dark text-light border-info">
                     <option value="">{{ 'shop.filter_category_placeholder'|trans }}</option>
                     {% for category in categories %}
                         <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
@@ -37,10 +38,8 @@
 
             <div class="col-md-4">
                 <label class="form-label text-info fw-bold">{{ 'shop.filter_status'|trans }}</label>
-                <select data-filter-target="status"
-                        name="status"
-                        class="form-select bg-dark text-light border-info"
-                        data-action="change->filter#updateFilters">
+                <select name="status"
+                        class="form-select bg-dark text-light border-info">
                     <option value="">{{ 'shop.filter_status_placeholder'|trans }}</option>
                     {% for s in statuses %}
                         <option value="{{ s.id }}" {% if selectedStatus == s.id %}selected{% endif %}>
@@ -51,9 +50,8 @@
             </div>
 
             <div class="col-md-2 text-end">
-                <button type="button"
-                        class="btn btn-info w-100 fw-bold"
-                        data-action="click->filter#updateFilters">
+                <button type="submit"
+                        class="btn btn-info w-100 fw-bold">
                     {{ 'shop.filter_button'|trans }} 🔍
                 </button>
             </div>
@@ -61,8 +59,11 @@
     </form>
 
     <!-- 🧾 Résultats dynamiques -->
-    <div id="shop-results" data-filter-target="results">
+    <div id="shop-results">
         {% include 'shop/_product_list.html.twig' with { products: products } %}
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(products) }}
+        </div>
     </div>
 
     <!-- 🛒 Bouton panier -->
@@ -89,6 +90,16 @@
     option {
         background-color: #212529;
         color: #f8f9fa;
+    }
+    .hero-shop {
+        background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%),
+                    radial-gradient(circle at 80% 0%, rgba(255,255,255,0.05), transparent 35%),
+                    #0f131a;
+        border: 1px solid rgba(13,202,240,0.15);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    .filter-card {
+        box-shadow: 0 10px 28px rgba(0,0,0,0.25);
     }
 </style>
 {% endblock %}

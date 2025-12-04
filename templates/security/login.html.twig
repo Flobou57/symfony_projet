@@ -4,8 +4,12 @@
 
 {% block body %}
 <div class="min-vh-100 d-flex align-items-center justify-content-center bg-dark text-light">
-    <div class="card bg-secondary shadow-lg p-4 w-100" style="max-width: 500px;">
-        <h2 class="text-center mb-4 text-info">🔐 {{ 'auth.login_title'|trans }}</h2>
+    <div class="card bg-dark border-info shadow-lg p-4 w-100" style="max-width: 520px;">
+        <div class="mb-3 text-center">
+            <p class="badge bg-info text-dark mb-2">#Connexion</p>
+            <h2 class="text-info fw-bold mb-1">🔐 {{ 'auth.login_title'|trans }}</h2>
+            <p class="text-muted mb-0 small">Accès compte administrateur ou client.</p>
+        </div>
 
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>

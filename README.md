@@ -89,7 +89,19 @@ Attention : Il vous faut PHP 8.2 pour faire fonctionner ce projet.
    ```
    symfony server:start
    ```
+   (ou utilisez Apache/MAMP en pointant sur `public/`)
 
 ## Comptes de test
 - Administrateur : `admin@skinmarket.test` / mot de passe `Admin123!`
 - Client : `player@skinmarket.test` / mot de passe `Player123!`
+
+## Fonctionnalités principales
+- Authentification (ROLE_ADMIN / ROLE_USER)
+- Boutique avec filtres (catégorie, statut, recherche par nom/description) et page détail produit (ajout panier)
+- Panier dynamique (Stimulus) avec modification de quantité, vérification de stock, checkout + mise à jour stock
+- Statuts produits synchronisés au stock (listener) + statuts commandes (enum)
+- Dashboard admin (ratios, dernières commandes, ventes)
+- Backoffice produits/catégories/utilisateurs/commandes
+- Traductions fr/en (nav, pages, flashs)
+- Profil utilisateur avec ajout/suppression d’adresses
+- Fixtures complètes thème CS:GO (produits, commandes, utilisateurs, adresses, statuts)

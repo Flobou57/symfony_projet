@@ -4,9 +4,12 @@
 
 {% block body %}
 <div class="container mt-5 text-light">
-    <div class="card bg-dark border-secondary shadow-lg p-4">
-        <h1 class="text-center mb-4 text-warning">✏️ {{ 'product.edit_title'|trans }}</h1>
-
+    <div class="hero-section mb-4 p-4 p-lg-5 rounded">
+        <p class="badge bg-info text-dark mb-2">#Produit</p>
+        <h1 class="fw-bold mb-2">✏️ {{ 'product.edit_title'|trans }}</h1>
+        <p class="text-muted mb-0">Modifiez les informations du produit.</p>
+    </div>
+    <div class="card bg-dark border-info shadow-lg p-4">
         {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
         <div class="row">
             <div class="col-md-6">
@@ -56,4 +59,11 @@
         {{ form_end(form) }}
     </div>
 </div>
+<style>
+.hero-section {
+    background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%), #0f131a;
+    border: 1px solid rgba(13,202,240,0.2);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+</style>
 {% endblock %}

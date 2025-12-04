@@ -20,11 +20,17 @@
                     <p class="card-text flex-grow-1">{{ product.description|slice(0, 100) }}...</p>
                     <h5 class="mt-auto text-end text-light fw-bold">{{ product.price }} €</h5>
 
-                    <a href="{{ path('app_shop_add', { id: product.id }) }}"
-                       class="btn btn-outline-info w-100 mt-3"
-                       data-action="click->cart#add">
-                        🛒 {{ 'shop.add_to_cart'|trans }}
-                    </a>
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{{ path('app_shop_product_show', { id: product.id }) }}"
+                           class="btn btn-outline-light w-50">
+                            👁️ Voir
+                        </a>
+                        <a href="{{ path('app_shop_add', { id: product.id }) }}"
+                           class="btn btn-outline-info w-50"
+                           data-action="click->cart#add">
+                            🛒 {{ 'shop.add_to_cart'|trans }}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

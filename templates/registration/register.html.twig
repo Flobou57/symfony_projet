@@ -4,8 +4,12 @@
 
 {% block body %}
 <div class="min-vh-100 d-flex align-items-center justify-content-center bg-dark text-light">
-    <div class="card bg-secondary shadow-lg p-4 w-100" style="max-width: 500px;">
-        <h2 class="text-center mb-4 text-info">🧾 Créer un compte</h2>
+    <div class="card bg-dark border-info shadow-lg p-4 w-100" style="max-width: 550px;">
+        <div class="mb-3 text-center">
+            <p class="badge bg-info text-dark mb-2">#Inscription</p>
+            <h2 class="text-info fw-bold mb-1">🧾 Créer un compte</h2>
+            <p class="text-muted mb-0 small">Nom, prénom et adresse de facturation requis.</p>
+        </div>
 
         {{ form_start(registrationForm) }}
             <div class="mb-3">
@@ -45,7 +49,7 @@
                 {{ form_label(registrationForm.agreeTerms, 'J’accepte les conditions', {'label_attr': {'class': 'form-check-label text-light'}}) }}
             </div>
 
-            <button type="submit" class="btn btn-info w-100">Créer mon compte</button>
+            <button type="submit" class="btn btn-info w-100 fw-bold">Créer mon compte</button>
         {{ form_end(registrationForm) }}
 
         <div class="text-center mt-3">
