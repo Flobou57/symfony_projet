@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-    static targets = ["count", "total", "message", "pageTotal"];
+    static targets = ["count", "total", "message", "pageTotal", "lineSubtotal"];
 
     connect() {
         console.log("Contrôleur du panier connecté !");
@@ -137,7 +137,9 @@ export default class extends Controller {
 
             // Mettre à jour le subtotal de la ligne
             const productId = data.productId;
-            const subtotalEl = document.querySelector(`[data-cart-line-subtotal="${productId}"]`);
+            const subtotalEl =
+                this.lineSubtotalTargets.find((el) => el.dataset.productId === String(productId)) ||
+                document.querySelector(`[data-cart-line-subtotal="${productId}"]`);
             if (subtotalEl) {
                 subtotalEl.textContent = (data.lineSubtotal ?? 0).toFixed(2) + " €";
             }

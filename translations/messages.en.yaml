@@ -33,6 +33,10 @@ home:
   title: "Home - SkinMarket"
   headline: "Welcome to SkinMarket 🎯"
   subtitle: "Manage your CS:GO skins, categories, and products easily."
+  hero_title: "Premium skins, secure payments, smooth experience."
+  hero_subtitle: "Browse top selections of weapons, knives, gloves and stickers with a dynamic cart and full backoffice."
+  cta_shop: "Discover the shop"
+  cta_register: "Create an account"
   view_categories: "View Categories"
   view_products: "View Products"
 

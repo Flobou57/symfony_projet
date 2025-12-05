@@ -50,9 +50,6 @@ return [
         'version' => '2.4.3',
         'type' => 'css',
     ],
-    '@symfony/ux-live-component' => [
-        'version' => '2.31.0',
-    ],
     '@symfony/stimulus-bridge' => [
         'version' => '4.0.1',
     ],

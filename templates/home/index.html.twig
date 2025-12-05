@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SkinMarket — Home{% endblock %}
+{% block title %}{{ 'home.title'|trans }}{% endblock %}
 
 {% block body %}
 <section class="hero-home text-light">
@@ -8,12 +8,12 @@
         <div class="row align-items-center">
             <div class="col-lg-6">
                 <p class="badge bg-info text-dark mb-3">#CSGO #Marketplace</p>
-                <h1 class="display-4 fw-bold mb-3">Skins premium, paiements sécurisés, expérience fluide.</h1>
-                <p class="lead text-muted mb-4">Parcourez les meilleures sélections d’armes, couteaux, gants et stickers, avec un panier dynamique et un backoffice complet.</p>
+                <h1 class="display-4 fw-bold mb-3">{{ 'home.hero_title'|trans }}</h1>
+                <p class="lead text-muted mb-4">{{ 'home.hero_subtitle'|trans }}</p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="{{ path('app_shop_index') }}" class="btn btn-info btn-lg text-dark fw-bold">Découvrir la boutique</a>
+                    <a href="{{ path('app_shop_index') }}" class="btn btn-info btn-lg text-dark fw-bold">{{ 'home.cta_shop'|trans }}</a>
                     {% if not app.user %}
-                        <a href="{{ path('app_register') }}" class="btn btn-outline-light btn-lg">Créer un compte</a>
+                        <a href="{{ path('app_register') }}" class="btn btn-outline-light btn-lg">{{ 'home.cta_register'|trans }}</a>
                     {% endif %}
                 </div>
             </div>
