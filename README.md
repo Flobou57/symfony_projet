@@ -85,6 +85,10 @@ Attention : Il vous faut PHP 8.2 pour faire fonctionner ce projet.
    ```
    php bin/console doctrine:fixtures:load
    ```
+5. Compiler les assets (importmap/AssetMapper) :
+   ```
+   php bin/console asset-map:compile
+   ```
 5. Démarrer le serveur Symfony :
    ```
    symfony server:start
@@ -94,6 +98,12 @@ Attention : Il vous faut PHP 8.2 pour faire fonctionner ce projet.
 ## Comptes de test
 - Administrateur : `admin@skinmarket.test` / mot de passe `Admin123!`
 - Client : `player@skinmarket.test` / mot de passe `Player123!`
+
+## Lancer les tests
+- Les tests unitaires (ex. `CartServiceTest`) ne nécessitent pas de base de données. Lancez simplement :
+  ```
+  php bin/phpunit
+  ```
 
 ## Fonctionnalités principales
 - Authentification (ROLE_ADMIN / ROLE_USER)
