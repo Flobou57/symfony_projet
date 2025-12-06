@@ -1,0 +1,4 @@
+{% include 'shop/_product_list.html.twig' with { products: products } %}
+<div class="d-flex justify-content-center mt-4">
+    {{ knp_pagination_render(products) }}
+</div>

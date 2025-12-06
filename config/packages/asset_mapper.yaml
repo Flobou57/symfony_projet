@@ -3,3 +3,5 @@ framework:
         # The paths to make available to the asset mapper.
         paths:
             - assets/
+            - vendor/symfony/ux-live-component/assets
+            - vendor/symfony/ux-autocomplete/assets

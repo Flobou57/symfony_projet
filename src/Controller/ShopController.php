@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/shop')]
 class ShopController extends AbstractController
@@ -40,8 +41,8 @@ class ShopController extends AbstractController
 
         $qb = $productRepository->searchQueryBuilder(
             $query ?: null,
-            $category ? (int)$category : null,
-            $status ? (int)$status : null
+            $category ? (int) $category : null,
+            $status ? (int) $status : null
         );
 
         $products = $paginator->paginate(
@@ -58,6 +59,77 @@ class ShopController extends AbstractController
             'selectedStatus' => $status,
             'selectedQuery' => $query,
         ]);
+    }
+
+    #[Route('/search/live', name: 'app_shop_live_search', methods: ['GET'])]
+    public function liveSearch(
+        Request $request,
+        ProductRepository $productRepository,
+        CategoryRepository $categoryRepository,
+        ProductStatusRepository $statusRepository,
+        \Knp\Component\Pager\PaginatorInterface $paginator
+    ): Response {
+        $category = $request->query->get('category');
+        $status = $request->query->get('status');
+        $query = $request->query->get('q');
+        $page = $request->query->getInt('page', 1);
+
+        $qb = $productRepository->searchQueryBuilder(
+            $query ?: null,
+            $category ? (int) $category : null,
+            $status ? (int) $status : null
+        );
+
+        $products = $paginator->paginate(
+            $qb,
+            $page,
+            9
+        );
+
+        return $this->render('shop/_results.html.twig', [
+            'products' => $products,
+            'categories' => $categoryRepository->findAll(),
+            'statuses' => $statusRepository->findAll(),
+            'selectedCategory' => $category,
+            'selectedStatus' => $status,
+            'selectedQuery' => $query,
+        ]);
+    }
+
+    #[Route('/search/suggestions', name: 'app_shop_suggestions', methods: ['GET'])]
+    public function suggestions(
+        Request $request,
+        ProductRepository $productRepository,
+        UrlGeneratorInterface $urlGenerator
+    ): JsonResponse {
+        $q = trim((string) $request->query->get('q', ''));
+        if ($q === '') {
+            return new JsonResponse([]);
+        }
+
+        $qb = $productRepository->createQueryBuilder('p')
+            ->where('p.name LIKE :q OR p.description LIKE :q')
+            ->setParameter('q', '%' . $q . '%')
+            ->setMaxResults(8);
+
+        $results = [];
+        foreach ($qb->getQuery()->getResult() as $product) {
+            $imageUrl = null;
+            $images = $product->getImages();
+            if ($images->count() > 0 && $images->first()) {
+                $imageUrl = $images->first()->getUrl();
+            }
+
+            $results[] = [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'price' => $product->getPrice(),
+                'url' => $urlGenerator->generate('app_shop_product_show', ['id' => $product->getId()]),
+                'image' => $imageUrl ?? '/images/no-image.png',
+            ];
+        }
+
+        return new JsonResponse($results);
     }
 
     #[Route('/product/{id}', name: 'app_shop_product_show', methods: ['GET'])]
@@ -171,8 +243,7 @@ class ShopController extends AbstractController
         SessionInterface $session,
         Request $request,
         ProductRepository $productRepository
-    ): Response
-    {
+    ): Response {
         $cart = $session->get('cart', []);
         $removed = array_key_exists($id, $cart);
         unset($cart[$id]);
@@ -342,7 +413,8 @@ class ShopController extends AbstractController
 
             foreach ($cart as $id => $qty) {
                 $product = $productRepository->find($id);
-                if (!$product) continue;
+                if (!$product)
+                    continue;
 
                 if ($product->getStock() < $qty) {
                     $this->addFlash('danger', $this->translator->trans('flash.stock_unavailable', [

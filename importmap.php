@@ -59,4 +59,7 @@ return [
     'controllers/cart_controller.js' => [
         'path' => './assets/controllers/cart_controller.js',
     ],
+    'controllers/live_search_controller.js' => [
+        'path' => './assets/controllers/live_search_controller.js',
+    ],
 ];
