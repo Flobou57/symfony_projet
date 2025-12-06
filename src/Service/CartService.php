@@ -34,11 +34,16 @@ class CartService
 
             $product = $this->productRepository->find($productId);
             if (!$product) {
+                // Nettoie les entrées obsolètes (produit supprimé/changé)
+                unset($cart[$productId]);
                 continue;
             }
 
             $total += $product->getPrice() * $quantity;
         }
+
+        // Met à jour la session avec un panier épuré des produits absents
+        $session->set('cart', $cart);
 
         return [
             'count' => $count,

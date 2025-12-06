@@ -22,7 +22,6 @@ class DashboardController extends AbstractController
         ProductStatusRepository $productStatusRepository,
         EntityManagerInterface $em
     ): Response {
-        // 1️⃣ Nombre de produits par catégorie
         $categories = $categoryRepository->findAll();
         $productsByCategory = [];
         foreach ($categories as $cat) {
@@ -30,10 +29,8 @@ class DashboardController extends AbstractController
             $productsByCategory[$cat->getName()] = $count;
         }
 
-        // 2️⃣ Les 5 dernières commandes
         $lastOrders = $orderRepository->findBy([], ['id' => 'DESC'], 5);
 
-        // 3️⃣ Ratio des statuts produits
         $totalProducts = $productRepository->count([]);
         $statusCounts = [];
         $statusLabels = [
@@ -53,7 +50,6 @@ class DashboardController extends AbstractController
             $ratios[$status] = $totalProducts > 0 ? round(($count / $totalProducts) * 100, 2) : 0;
         }
 
-        // 4️⃣ Montant total des ventes (par mois, commandes livrées)
         $connection = $em->getConnection();
         $salesData = $connection->executeQuery("
             SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, SUM(total) AS total

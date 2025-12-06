@@ -10,7 +10,6 @@
         <p class="text-muted mb-0">Vue synthétique : produits, commandes, ventes.</p>
     </div>
 
-    <!-- Bloc 1 : Produits par catégorie -->
     <div class="card bg-dark border-info mb-4 p-4 shadow-lg">
         <h4 class="text-info mb-3">📦 {{ 'admin.dashboard.products_by_category'|trans }}</h4>
         <ul class="list-group list-group-flush">
@@ -25,7 +24,6 @@
         </ul>
     </div>
 
-    <!-- Bloc 2 : Dernières commandes -->
     <div class="card bg-dark border-info mb-4 p-4 shadow-lg">
         <h4 class="text-info mb-3">🧾 {{ 'admin.dashboard.last_orders'|trans }}</h4>
         <table class="table table-dark table-striped align-middle">
@@ -61,11 +59,12 @@
         </table>
     </div>
 
-    <!-- Bloc 3 : Ratio disponibilité -->
     <div class="card bg-dark border-info mb-4 p-4 shadow-lg">
         <h4 class="text-info mb-3">⚖️ {{ 'admin.dashboard.availability'|trans }}</h4>
+        {% set availabilityOrder = ['Rupture', 'Précommande', 'En stock'] %}
         <div class="row text-center">
-            {% for label, ratio in ratios %}
+            {% for label in availabilityOrder %}
+                {% set ratio = ratios[label] ?? 0 %}
                 <div class="col-md-4">
                     <div class="p-3 border rounded bg-dark shadow-sm">
                         {% set statusKey = 'status_labels.' ~ label %}
@@ -77,7 +76,6 @@
         </div>
     </div>
 
-    <!-- Bloc 4 : Montant total des ventes -->
     <div class="card bg-dark border-info p-4 mb-5 shadow-lg">
         <h4 class="text-info mb-3">💰 {{ 'admin.dashboard.sales_title'|trans }}</h4>
         <table class="table table-dark table-striped">

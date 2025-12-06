@@ -64,7 +64,10 @@
     </style>
 </head>
 
-<body data-controller="cart" data-action="turbo:load->cart#refreshSummary">
+<body data-controller="cart"
+      data-action="turbo:load->cart#refreshSummary"
+      data-cart-add-success="{{ 'flash.cart_added'|trans }}"
+      data-cart-add-error="{{ 'flash.cart_error'|default('Erreur lors de l’ajout au panier.')|trans }}">
 <nav class="navbar navbar-expand-lg navbar-dark mb-4 shadow-sm">
     <div class="container">
         <a class="navbar-brand" href="{{ path('app_home') }}">🌙 SkinMarket</a>
@@ -73,7 +76,6 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Liens principaux -->
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_shop_index') }}">🛍️ {{ 'nav.shop'|trans }}</a>
@@ -95,7 +97,6 @@
                 {% endif %}
             </ul>
 
-            <!-- Panier dynamique + Auth -->
             <ul class="navbar-nav align-items-center">
                 <li class="nav-item position-relative me-3">
                     <a href="{{ path('app_shop_cart') }}" class="nav-link fw-bold text-info">
@@ -143,7 +144,6 @@
     </div>
 </nav>
 
-<!-- Messages flash -->
 {% for label, messages in app.flashes %}
     {% for message in messages %}
         <div class="alert alert-{{ label }} text-center fw-bold position-fixed top-0 start-50 translate-middle-x mt-3 show"
@@ -153,7 +153,6 @@
     {% endfor %}
 {% endfor %}
 
-<!-- Message du panier dynamique -->
 <div id="flash-message"
      class="alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3 text-center fw-bold"
      style="display:none; z-index: 2000;"

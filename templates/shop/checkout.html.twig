@@ -29,13 +29,12 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">{{ 'checkout.expiration'|trans }}</label>
-                            <input type="text"
+                            <input type="month"
                                    name="expiration"
-                                   pattern="\d{2}/\d{2}"
-                                   maxlength="5"
                                    class="form-control bg-dark text-light border-info"
-                                   placeholder="12/27"
-                                   required>
+                                   min="2025-12"
+                                   required
+                                   title="{{ 'checkout.expiration'|trans }} (YYYY-MM)">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">{{ 'checkout.cvv'|trans }}</label>

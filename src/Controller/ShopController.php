@@ -26,9 +26,6 @@ class ShopController extends AbstractController
     {
     }
 
-    /**
-     * 🛍️ Affichage de la boutique
-     */
     #[Route('/', name: 'app_shop_index')]
     public function index(
         ProductRepository $productRepository,
@@ -63,9 +60,6 @@ class ShopController extends AbstractController
         ]);
     }
 
-    /**
-     * 🔍 Détail d’un produit
-     */
     #[Route('/product/{id}', name: 'app_shop_product_show', methods: ['GET'])]
     public function productShow(Product $product): Response
     {
@@ -74,9 +68,6 @@ class ShopController extends AbstractController
         ]);
     }
 
-    /**
-     * ➕ Ajouter un produit au panier
-     */
     #[Route('/add/{id}', name: 'app_shop_add')]
     public function addToCart(
         int $id,
@@ -135,24 +126,19 @@ class ShopController extends AbstractController
         return $this->redirectToRoute('app_shop_index');
     }
 
-    /**
-     * 📊 Résumé du panier pour rafraîchissement AJAX
-     */
     #[Route('/cart/summary', name: 'app_shop_cart_summary', methods: ['GET'])]
     public function cartSummary(CartService $cartService): JsonResponse
     {
         return new JsonResponse($cartService->getSummary());
     }
 
-    /**
-     * 🧺 Afficher le panier
-     */
     #[Route('/cart', name: 'app_shop_cart')]
     public function cart(SessionInterface $session, ProductRepository $productRepository): Response
     {
         $cart = $session->get('cart', []);
         $items = [];
         $total = 0;
+        $cleanCart = $cart;
 
         foreach ($cart as $id => $quantity) {
             $product = $productRepository->find($id);
@@ -163,7 +149,14 @@ class ShopController extends AbstractController
                     'subtotal' => $product->getPrice() * $quantity,
                 ];
                 $total += $product->getPrice() * $quantity;
+            } else {
+                unset($cleanCart[$id]); // produit supprimé -> on nettoie
             }
+        }
+
+        // Enregistre le panier nettoyé si besoin
+        if ($cleanCart !== $cart) {
+            $session->set('cart', $cleanCart);
         }
 
         return $this->render('shop/cart.html.twig', [
@@ -172,9 +165,6 @@ class ShopController extends AbstractController
         ]);
     }
 
-    /**
-     * ❌ Supprimer un produit du panier
-     */
     #[Route('/remove/{id}', name: 'app_shop_remove')]
     public function removeFromCart(
         int $id,
@@ -210,9 +200,6 @@ class ShopController extends AbstractController
         return $this->redirectToRoute('app_shop_cart');
     }
 
-    /**
-     * 🧹 Vider complètement le panier
-     */
     #[Route('/clear', name: 'app_shop_clear')]
     public function clearCart(SessionInterface $session): Response
     {
@@ -221,9 +208,6 @@ class ShopController extends AbstractController
         return $this->redirectToRoute('app_shop_cart');
     }
 
-    /**
-     * ✏️ Mettre à jour la quantité d’un produit dans le panier
-     */
     #[Route('/update/{id}', name: 'app_shop_update_quantity', methods: ['POST'])]
     public function updateQuantity(
         int $id,
@@ -284,9 +268,6 @@ class ShopController extends AbstractController
         return $this->redirectToRoute('app_shop_cart');
     }
 
-    /**
-     * 💳 Paiement et validation de commande numérique
-     */
     #[Route('/checkout', name: 'app_shop_checkout', methods: ['GET', 'POST'])]
     public function checkout(
         Request $request,

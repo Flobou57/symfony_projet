@@ -30,7 +30,6 @@
                        autocomplete="current-password" required>
             </div>
 
-            <!-- ✅ Jeton CSRF obligatoire -->
             <input type="hidden" name="_csrf_token"
                    value="{{ csrf_token('authenticate') }}">
 

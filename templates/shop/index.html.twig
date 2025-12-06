@@ -5,12 +5,11 @@
 {% block body %}
 <div class="container mt-5 text-light">
     <div class="hero-shop mb-4 p-4 p-lg-5 rounded">
-        <p class="badge bg-info text-dark mb-2">#Marketplace</p>
-        <h1 class="fw-bold mb-2">Boutique SkinMarket</h1>
-        <p class="text-muted mb-0">Filtres instantanés, panier dynamique et skins CS:GO premium.</p>
+        <p class="badge bg-info text-dark mb-2">{{ 'shop.badge'|trans }}</p>
+        <h1 class="fw-bold mb-2">{{ 'shop.title'|trans }}</h1>
+        <p class="text-muted mb-0">{{ 'shop.hero_subtitle'|trans }}</p>
     </div>
 
-    <!-- 🔎 Filtres dynamiques -->
     <form class="mb-5 bg-dark p-3 rounded border border-info shadow-sm filter-card" method="get" action="{{ path('app_shop_index') }}">
         <div class="row g-3 align-items-end">
             <div class="col-md-4">
@@ -58,7 +57,6 @@
         </div>
     </form>
 
-    <!-- 🧾 Résultats dynamiques -->
     <div id="shop-results">
         {% include 'shop/_product_list.html.twig' with { products: products } %}
         <div class="d-flex justify-content-center mt-4">
@@ -66,7 +64,6 @@
         </div>
     </div>
 
-    <!-- 🛒 Bouton panier -->
     <div class="text-center mt-4">
         <a href="{{ path('app_shop_cart') }}" class="btn btn-info px-5 py-2 fw-bold shadow-sm">
             {{ 'shop.cart_button'|trans }}
@@ -74,7 +71,6 @@
     </div>
 </div>
 
-<!-- 💅 Style -->
 <style>
     .product-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;

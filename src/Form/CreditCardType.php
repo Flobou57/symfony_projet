@@ -20,7 +20,12 @@ class CreditCardType extends AbstractType
             ])
             ->add('expirationDate', TextType::class, [
                 'label' => 'Date d’expiration (MM/YY)',
-                'attr' => ['placeholder' => '12/28']
+                'attr' => [
+                    'placeholder' => '12/28',
+                    // Autorise uniquement 12/25 ou toute date >= 01/26
+                    'pattern' => '((12)/25|((0[1-9]|1[0-2])/(2[6-9]|[3-9][0-9])))',
+                    'title' => 'MM/YY (min 12/25)'
+                ]
             ])
             ->add('cvv', IntegerType::class, [
                 'label' => 'Code CVV',

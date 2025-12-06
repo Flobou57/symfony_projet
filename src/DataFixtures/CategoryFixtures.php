@@ -14,6 +14,7 @@ class CategoryFixtures extends Fixture
         'category_knives',
         'category_gloves',
         'category_stickers',
+        'category_agents',
     ];
 
     public function load(ObjectManager $manager): void
@@ -24,6 +25,7 @@ class CategoryFixtures extends Fixture
             'Couteaux',
             'Gants',
             'Stickers',
+            'Agents',
         ];
 
         foreach ($names as $index => $name) {

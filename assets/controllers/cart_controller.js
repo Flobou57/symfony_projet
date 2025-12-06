@@ -8,9 +8,6 @@ export default class extends Controller {
         this.refreshSummary();
     }
 
-    /**
-     * Ajoute un produit au panier en AJAX
-     */
     async add(event) {
         event.preventDefault();
 
@@ -22,9 +19,9 @@ export default class extends Controller {
             if (response.ok) {
                 const data = await response.json();
                 this.updateCartDisplay(data);
-                this.showMessage("Produit ajouté au panier !");
+                this.showMessage(this.element.dataset.cartAddSuccess || "Produit ajouté au panier !");
             } else {
-                this.showMessage("Erreur lors de l’ajout au panier.");
+                this.showMessage(this.element.dataset.cartAddError || "Erreur lors de l’ajout au panier.");
             }
         } catch (e) {
             console.error(e);
@@ -32,9 +29,6 @@ export default class extends Controller {
         }
     }
 
-    /**
-     * Récupère le résumé du panier (count/total) au chargement
-     */
     async refreshSummary() {
         try {
             const response = await fetch("/shop/cart/summary", {
@@ -52,52 +46,75 @@ export default class extends Controller {
         }
     }
 
-    /**
-     * Met à jour l’affichage du panier (nombre et total)
-     */
     updateCartDisplay(data) {
         if (this.hasCountTarget) this.countTarget.textContent = data.count ?? "0";
         if (this.hasTotalTarget) this.totalTarget.textContent = (data.total ?? 0).toFixed(2) + " €";
         if (this.hasPageTotalTarget) this.pageTotalTarget.textContent = (data.total ?? 0).toFixed(2) + " €";
     }
 
-    /**
-     * Affiche un petit message temporaire (succès ou erreur)
-     */
     showMessage(text) {
         if (this.hasMessageTarget) {
             this.messageTarget.textContent = text;
+            this.messageTarget.style.display = "block";
             this.messageTarget.classList.add("show");
 
             setTimeout(() => {
                 this.messageTarget.classList.remove("show");
+                this.messageTarget.style.display = "none";
             }, 2000);
         }
     }
 
-    /**
-     * Supprime un produit du panier en AJAX
-     */
     async remove(event) {
         event.preventDefault();
         const url = event.currentTarget.getAttribute("href");
+        const row = event.currentTarget.closest("tr");
+        const qtyInput = row ? row.querySelector('input[name="quantity"]') : null;
+        const lineSubtotalEl = row ? row.querySelector("[data-cart-line-subtotal]") : null;
+        const optimisticQty = qtyInput ? parseInt(qtyInput.value, 10) || 0 : 0;
+        const optimisticSubtotal = lineSubtotalEl
+            ? parseFloat((lineSubtotalEl.textContent || "0").replace(/[^\d.,-]/g, "").replace(",", "."))
+            : 0;
         try {
             const response = await fetch(url, {
-                headers: { "X-Requested-With": "XMLHttpRequest" },
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Accept": "application/json",
+                },
+                credentials: "same-origin",
             });
-            const data = await response.json();
 
-            if (!response.ok || data.error) {
-                this.showMessage(data.error || "Erreur lors de la suppression.");
+            if (response.redirected) {
+                window.location.href = response.url;
                 return;
             }
 
-            // Retirer la ligne du DOM
-            const row = event.currentTarget.closest("tr");
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok || data.error) {
+                this.showMessage(data.error || "Erreur lors de la suppression.");
+                // Si pas de JSON valide, on laisse la page se recharger
+                if (!response.ok && !data) window.location.href = url;
+                return;
+            }
+
             if (row) row.remove();
 
-            // Mettre à jour totaux
-            this.updateCartDisplay(data);
+            const total =
+                typeof data.total !== "undefined"
+                    ? data.total
+                    : Math.max(0, (this.hasPageTotalTarget ? parseFloat(this.pageTotalTarget.textContent) || 0 : 0) - optimisticSubtotal);
+            const count =
+                typeof data.count !== "undefined"
+                    ? data.count
+                    : Math.max(0, (this.hasCountTarget ? parseInt(this.countTarget.textContent || "0", 10) || 0 : 0) - optimisticQty);
+            this.updateCartDisplay({ total, count });
+
+            if (this.hasPageTotalTarget && document.querySelectorAll('[data-cart-line-subtotal]').length === 0) {
+                this.pageTotalTarget.textContent = "0.00 €";
+            }
+            this.refreshSummary();
+
             this.showMessage("Produit retiré.");
         } catch (e) {
             console.error(e);
@@ -105,9 +122,6 @@ export default class extends Controller {
         }
     }
 
-    /**
-     * Met à jour la quantité d’une ligne de panier en AJAX
-     */
     async updateQuantity(event) {
         event.preventDefault();
         const form = event.target.closest("form");
@@ -135,7 +149,6 @@ export default class extends Controller {
                 return;
             }
 
-            // Mettre à jour le subtotal de la ligne
             const productId = data.productId;
             const subtotalEl =
                 this.lineSubtotalTargets.find((el) => el.dataset.productId === String(productId)) ||
@@ -144,7 +157,6 @@ export default class extends Controller {
                 subtotalEl.textContent = (data.lineSubtotal ?? 0).toFixed(2) + " €";
             }
 
-            // Mettre à jour totaux (nav + page)
             this.updateCartDisplay(data);
             this.showMessage("Quantité mise à jour.");
         } catch (e) {

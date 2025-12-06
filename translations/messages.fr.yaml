@@ -18,6 +18,8 @@ nav:
 
 shop:
   title: "Bienvenue dans la Boutique SkinMarket"
+  hero_subtitle: "Filtres instantanés, panier dynamique et skins CS:GO premium."
+  badge: "#Marketplace"
   filter_category: "Filtrer par catégorie :"
   filter_status: "Filtrer par statut :"
   filter_category_placeholder: "Toutes les catégories"
@@ -153,6 +155,9 @@ common:
 
 status_labels:
   Disponible: "Disponible"
+  "En stock": "En stock"
+  Rupture: "Rupture"
+  Précommande: "Précommande"
   "En rupture de stock": "En rupture de stock"
   "En précommande": "En précommande"
 
@@ -176,6 +181,7 @@ flash:
   out_of_stock: "❌ Le produit « %name% » est en rupture de stock."
   cart_limit: "❌ Stock insuffisant pour « %name% » (stock actuel : %stock%)."
   cart_added: "🛒 Produit ajouté au panier !"
+  cart_error: "Erreur lors de l’ajout au panier."
   product_removed: "❌ Produit retiré du panier."
   cart_cleared: "🧹 Panier vidé avec succès."
   login_required: "Veuillez vous connecter pour valider votre commande."
