@@ -24,11 +24,7 @@ Prerequis : PHP >= 8.2, Composer, MySQL.
    ```
    php bin/console asset-map:compile
    ```
-6. Démarrer le serveur :
-   ```
-   symfony server:start
-   ```
-   (ou Apache/MAMP pointant sur `public/`)
+6. Démarrer via MAMP/Apache : démarrez MAMP (Apache/MySQL) et pointez le DocumentRoot sur `.../symfony_projet/public` (ou utilisez l’URL locale de MAMP, ex. http://localhost:8888/symfony_projet/public).
 
 ## Comptes de test
 - Administrateur : `admin@skinmarket.test` / `Admin123!`
