@@ -18,26 +18,31 @@ class ProductType extends AbstractType
     {
         $builder
             ->add('name', null, [
-                'label' => 'Nom du produit',
+                'label' => 'product.form.name',
+                'translation_domain' => 'messages',
             ])
             ->add('price', null, [
-                'label' => 'Prix (€)',
+                'label' => 'product.form.price',
+                'translation_domain' => 'messages',
             ])
             ->add('description', null, [
-                'label' => 'Description',
+                'label' => 'product.form.description',
+                'translation_domain' => 'messages',
             ])
             ->add('stock', null, [
-                'label' => 'Stock disponible',
+                'label' => 'product.form.stock',
+                'translation_domain' => 'messages',
             ])
             ->add('status', EntityType::class, [
                 'class' => ProductStatus::class,
                 'choice_label' => 'label',
-                'label' => 'Statut du produit',
-                'placeholder' => '— Choisir un statut —',
+                'label' => 'product.form.status',
+                'placeholder' => 'product.form.status_placeholder',
+                'translation_domain' => 'messages',
             ])
             ->add('imageFile', FileType::class, [
-                'label' => 'Image du produit',
-                'mapped' => false, // ne correspond pas directement à une propriété de l’entité Product
+                'label' => 'product.form.image',
+                'mapped' => false,
                 'required' => false,
                 'constraints' => [
                     new File([
@@ -47,14 +52,16 @@ class ProductType extends AbstractType
                             'image/png',
                             'image/webp',
                         ],
-                        'mimeTypesMessage' => 'Merci d\'ajouter une image au format JPEG, PNG ou WEBP',
+                        'mimeTypesMessage' => 'product.form.image_mime',
                     ]),
                 ],
+                'translation_domain' => 'messages',
             ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
-                'label' => 'Catégorie',
+                'label' => 'product.form.category',
+                'translation_domain' => 'messages',
             ]);
     }
 

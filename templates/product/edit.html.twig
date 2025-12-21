@@ -5,9 +5,9 @@
 {% block body %}
 <div class="container mt-5 text-light">
     <div class="hero-section mb-4 p-4 p-lg-5 rounded">
-        <p class="badge bg-info text-dark mb-2">#Produit</p>
+        <p class="badge bg-info text-dark mb-2">{{ 'product.badge'|trans }}</p>
         <h1 class="fw-bold mb-2">✏️ {{ 'product.edit_title'|trans }}</h1>
-        <p class="text-muted mb-0">Modifiez les informations du produit.</p>
+        <p class="text-muted mb-0">{{ 'product.edit_subtitle'|trans }}</p>
     </div>
     <div class="card bg-dark border-info shadow-lg p-4">
         {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}

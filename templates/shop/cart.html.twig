@@ -5,9 +5,9 @@
 {% block body %}
 <div class="container mt-5 text-light">
     <div class="hero-cart mb-4 p-4 p-lg-5 rounded">
-        <p class="badge bg-info text-dark mb-2">#Panier</p>
+        <p class="badge bg-info text-dark mb-2">{{ 'cart.badge'|trans }}</p>
         <h1 class="fw-bold mb-2">🧺 {{ 'cart.title'|trans }}</h1>
-        <p class="text-muted mb-0">Ajustez vos quantités en direct, sans recharger, avant de passer au paiement.</p>
+        <p class="text-muted mb-0">{{ 'cart.subtitle'|trans }}</p>
     </div>
 
     {% if items is empty %}

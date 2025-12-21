@@ -19,8 +19,8 @@
         <form class="mb-5 bg-dark p-3 rounded border border-info shadow-sm filter-card"
               method="get"
               action="{{ path('app_shop_index') }}">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4 position-relative">
+            <div class="row g-3 align-items-end align-items-center">
+                <div class="col-lg-4 col-md-6 position-relative">
                     <label class="form-label text-info fw-bold">{{ 'shop.search_label'|default('Recherche')|trans }}</label>
                     <input type="text"
                            name="q"
@@ -35,10 +35,9 @@
                     <div class="autocomplete-suggestions d-none"
                          data-live-search-target="suggestions">
                     </div>
-                    <small class="text-muted">{{ 'shop.search_placeholder'|trans }}</small>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-lg-3 col-md-6">
                     <label class="form-label text-info fw-bold">{{ 'shop.filter_category'|trans }}</label>
                     <select name="category"
                             class="form-select bg-dark text-light border-info">
@@ -51,7 +50,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-lg-3 col-md-6">
                     <label class="form-label text-info fw-bold">{{ 'shop.filter_status'|trans }}</label>
                     <select name="status"
                             class="form-select bg-dark text-light border-info">
@@ -64,11 +63,13 @@
                     </select>
                 </div>
 
-                <div class="col-md-2 text-end">
-                    <button type="submit"
-                            class="btn btn-info w-100 fw-bold">
-                        {{ 'shop.filter_button'|trans }} 🔍
-                    </button>
+                <div class="col-lg-2 col-md-6 d-flex align-items-end justify-content-end">
+                    <div class="w-100 d-flex gap-2">
+                        <button type="submit"
+                                class="btn btn-info w-100 fw-bold">
+                            {{ 'shop.filter_button'|trans }} 🔍
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -106,6 +107,18 @@
     option {
         background-color: #212529;
         color: #f8f9fa;
+    }
+    .filter-card .form-label {
+        margin-bottom: 6px;
+    }
+    .filter-card .form-select,
+    .filter-card .form-control {
+        min-height: 42px;
+    }
+    @media (max-width: 992px) {
+        .filter-card .row > div {
+            margin-bottom: 8px;
+        }
     }
     .hero-shop {
         background: radial-gradient(circle at 20% 20%, rgba(13,202,240,0.12), transparent 30%),

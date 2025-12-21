@@ -4,9 +4,9 @@
 {% block body %}
 <div class="container mt-4 text-light">
     <div class="hero-section mb-4 p-4 p-lg-5 rounded">
-        <p class="badge bg-info text-dark mb-2">#Commandes</p>
+        <p class="badge bg-info text-dark mb-2">{{ 'admin.orders_badge'|trans }}</p>
         <h2 class="fw-bold mb-2">🧾 {{ 'admin.orders_heading'|trans }}</h2>
-        <p class="text-muted mb-0">Suivez et filtrez les commandes.</p>
+        <p class="text-muted mb-0">{{ 'admin.orders_subtitle'|trans }}</p>
     </div>
 
     <table class="table table-dark table-striped border-info align-middle shadow-sm">
@@ -25,7 +25,10 @@
                 <td>#{{ order.id }}</td>
                 {% set name = [order.user.firstName, order.user.lastName]|filter(v => v is not null and v != '')|join(' ') %}
                 <td>{{ name ?: order.user.email }}</td>
-                <td>{{ order.total|number_format(2, ',', ' ') }}</td>
+                {% set locale = app.request.locale ?? 'fr' %}
+                {% set dec = locale starts with 'fr' ? ',' : '.' %}
+                {% set sep = locale starts with 'fr' ? ' ' : ',' %}
+                <td>{{ order.total|number_format(2, dec, sep) }}</td>
                 {% set statusValue = order.status ? order.status.value : '' %}
                 {% set statusKey = statusValue ? 'order_status.' ~ statusValue : '' %}
                 <td>
